@@ -6,7 +6,7 @@
 #    By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/09 12:42:27 by msavelie          #+#    #+#              #
-#    Updated: 2024/09/09 12:54:35 by msavelie         ###   ########.fr        #
+#    Updated: 2024/10/03 15:37:03 by msavelie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,9 @@ NAME = pipex
 SRC_DIR = ./srcs
 
 SRCS = \
-	${SRC_DIR}/main.c 
+	${SRC_DIR}/main.c \
+	${SRC_DIR}/parse.c \
+	${SRC_DIR}/processes.c
 
 OBJS = ${SRCS:.c=.o}
 

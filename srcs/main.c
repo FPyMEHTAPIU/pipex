@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/03 11:36:39 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/03 15:42:42 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,20 @@ Provide 4 arguments!\n");
 		perror("Pipe failed\n");
 	else if (type == 5)
 		perror("Fork failed\n");
-	return (1);
+	exit(1);
+}
+
+static void	error_check(int argc, char **argv, t_pipex *pip)
+{
+	if (argc != 5)
+		error_ret(1);	
+	if (access(argv[1], R_OK) != 0)
+		error_ret(2);
+	if (access(argv[4], W_OK) != 0 && \
+		access(argv[4], W_OK) != ENOENT)
+		error_ret(3);
+	if (pipe(pip->fd_in) < 0 || pipe(pip->fd_out) < 0)
+		error_ret(4);
 }
 
 static t_pipex	init_pip(void)
@@ -42,28 +55,29 @@ static t_pipex	init_pip(void)
 
 int	main(int argc, char *argv[])
 {
-	if (argc != 5)
-		return (error_ret(1));
-	ft_printf("%s\n", argv[0]);
 	t_pipex	pip;
-	
+	char	*path;
+
 	pip = init_pip();
-	if (access(argv[1], R_OK) != 0)
-		return (error_ret(2));
-	if (pipe(pip.fd_in) < 0 || pipe(pip.fd_out) < 0)
-		return (error_ret(4));
-	pid_t p = fork();
+	error_check(argc, argv, &pip);
+	path = parse_args(argv, &pip);
+	ft_printf("%s\n", path);
+	/*pid_t p = fork();
 	if (p < 0)
 		return (error_ret(5));
 	else if (p > 0)
 	{
 		// close read and do writing
 		close(pip.fd_in[0]);
+		pip.fd_out[1] = open(argv[4], O_WRONLY);
+		// write to the end of the first fd (fd_in)
 	}
 	else
 	{
-		pip.fd_out[0] = open(argv[2], O_RDWR);
+		pip.fd_out[0] = open(argv[2], O_RDONLY);
 		
-	}
+		execve()
+		
+	}*/
 	return (0);
 }
