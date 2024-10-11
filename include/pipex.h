@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:38:44 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/03 15:42:14 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/11 10:51:39 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,6 @@ typedef struct s_pipex
 
 char	*parse_args(char **argv, t_pipex *pip);
 char	**split_and_check(char *str, char del, t_pipex *pip);
+void	clean_pip(t_pipex *pip);
 
 #endif

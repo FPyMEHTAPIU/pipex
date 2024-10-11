@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/03 15:42:42 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/11 10:49:29 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,5 +79,7 @@ int	main(int argc, char *argv[])
 		execve()
 		
 	}*/
+	free(path);
+	clean_pip(&pip);
 	return (0);
 }

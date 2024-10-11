@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:35:51 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/03 15:43:09 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/11 10:50:23 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ char	**split_and_check(char *str, char del, t_pipex *pip)
 	{
 		perror("Split error!\n");
 		// free the rest memory inside the struct
+		clean_pip(pip);
 		exit (1);
 	}
 	ft_printf("%d\n", pip->fd_in[0]);
