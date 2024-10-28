@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/28 15:06:59 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/28 15:40:21 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,17 @@ static void	error_check(int argc, char **argv, t_pipex *pip)
 		error_ret(4);
 }
 
-static t_pipex	init_pip(void)
+static t_pipex	init_pip(char **envp)
 {
-	t_pipex	pip = {
-		.envp = { "USER=msavelie", "HOME=/home/msavelie", "PATH=/bin:/usr/msavelie", NULL}
-	};
+	t_pipex	pip;
 	
 	pip.fd_in[0] = 0;
 	pip.fd_in[1] = 0;
 	pip.fd_out[0] = 0;
 	pip.fd_out[1] = 0;
 	pip.is_here_doc = false;
+	pip.paths = fetch_paths(envp);
+
 	return (pip);
 }
 
@@ -63,21 +63,7 @@ int	main(int argc, char *argv[], char **envp)
 	char	*check_path;
 	char	**paths;
 
-	pip = init_pip();
-	//ft_printf("%s\n%s\n%s\n%s\n", pip.envp[0], pip.envp[1], pip.envp[2], pip.envp[3]);
-	int i = 0;
-	while (envp[i]) {
-		if (ft_strnstr(envp[i], "PATH", 4))
-			check_path = ft_strdup(envp[i]);
-		//ft_printf("%s\n", envp[i++]);
-		i++;
-	}
-	ft_printf("check path: %s\n", check_path);
-	paths = ft_split(check_path + 5, ':');
-	i = 0;
-	while (paths[i]) {
-		ft_printf("%s\n", paths[i++]);
-	}
+	pip = init_pip(envp);
 	error_check(argc, argv, &pip);
 	path = parse_args(argv, &pip);
 	ft_printf("exec path: %s\n", path);

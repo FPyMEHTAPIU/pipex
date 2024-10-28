@@ -6,11 +6,37 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:35:51 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/28 12:16:41 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/28 15:37:26 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
+
+char	**fetch_paths(char **envp)
+{
+	int		i;
+	char	*check_path;
+	char	**paths;
+
+	i = 0;
+	while (envp[i]) {
+		if (ft_strnstr(envp[i], "PATH", 4))
+		{
+			check_path = ft_strdup(envp[i]);
+			perror("Malloc error!"), exit(1);
+		}
+			
+		i++;
+	}
+	if (check_path)
+	{
+		paths = ft_split(check_path + 5, ':');
+		free(check_path);
+		if (!paths)
+			perror("Malloc error!"), exit(1);
+	}
+	return (paths);
+}
 
 char	**split_and_check(char *str, char del, t_pipex *pip)
 {

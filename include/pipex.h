@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:38:44 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/28 12:01:30 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/28 15:39:34 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,12 @@ typedef struct s_pipex
 	bool	is_here_doc;
 	char	**in_args;
 	char	**out_args;
-	char	*envp[4];
+	char	**paths;
 }	t_pipex;
 
 char	*parse_args(char **argv, t_pipex *pip);
 char	**split_and_check(char *str, char del, t_pipex *pip);
 void	clean_pip(t_pipex *pip);
+char	**fetch_paths(char **envp);
 
 #endif
