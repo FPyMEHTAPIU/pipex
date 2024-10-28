@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:38:44 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/28 15:39:34 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/28 17:31:05 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,9 @@
 
 typedef struct s_pipex
 {
-	int		fd_in[2];
-	int		fd_out[2];
+	int		pipfd[2];
+	int		fd_in;
+	int		fd_out;
 	bool	is_here_doc;
 	char	**in_args;
 	char	**out_args;
