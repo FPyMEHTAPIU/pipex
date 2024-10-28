@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/11 10:49:29 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/28 15:06:59 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,10 @@ static void	error_check(int argc, char **argv, t_pipex *pip)
 
 static t_pipex	init_pip(void)
 {
-	t_pipex	pip;
-
+	t_pipex	pip = {
+		.envp = { "USER=msavelie", "HOME=/home/msavelie", "PATH=/bin:/usr/msavelie", NULL}
+	};
+	
 	pip.fd_in[0] = 0;
 	pip.fd_in[1] = 0;
 	pip.fd_out[0] = 0;
@@ -53,30 +55,50 @@ static t_pipex	init_pip(void)
 	return (pip);
 }
 
-int	main(int argc, char *argv[])
+int	main(int argc, char *argv[], char **envp)
 {
 	t_pipex	pip;
 	char	*path;
+	//pid_t	p;
+	char	*check_path;
+	char	**paths;
 
 	pip = init_pip();
+	//ft_printf("%s\n%s\n%s\n%s\n", pip.envp[0], pip.envp[1], pip.envp[2], pip.envp[3]);
+	int i = 0;
+	while (envp[i]) {
+		if (ft_strnstr(envp[i], "PATH", 4))
+			check_path = ft_strdup(envp[i]);
+		//ft_printf("%s\n", envp[i++]);
+		i++;
+	}
+	ft_printf("check path: %s\n", check_path);
+	paths = ft_split(check_path + 5, ':');
+	i = 0;
+	while (paths[i]) {
+		ft_printf("%s\n", paths[i++]);
+	}
 	error_check(argc, argv, &pip);
 	path = parse_args(argv, &pip);
-	ft_printf("%s\n", path);
-	/*pid_t p = fork();
+	ft_printf("exec path: %s\n", path);
+	/*p = fork();
 	if (p < 0)
 		return (error_ret(5));
 	else if (p > 0)
 	{
 		// close read and do writing
-		close(pip.fd_in[0]);
-		pip.fd_out[1] = open(argv[4], O_WRONLY);
+		close(pip.fd_out[0]);
+		pip.fd_in[0] = open(argv[4], O_WRONLY);
+		dup2(pip.fd_in[0], 0);
+		wait(NULL);
+		
 		// write to the end of the first fd (fd_in)
 	}
 	else
 	{
 		pip.fd_out[0] = open(argv[2], O_RDONLY);
 		
-		execve()
+		execve();
 		
 	}*/
 	free(path);

@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:35:51 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/11 10:50:23 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/28 12:16:41 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ char	*parse_args(char **argv, t_pipex *pip)
 	char	*path;
 	size_t	path_len;
 
+	// for multiple num of args - run while until argv[i + 1] != NULL
 	pip->in_args = split_and_check(argv[2], ' ', pip);
 	pip->out_args = split_and_check(argv[3], ' ', pip);
 	path_len = ft_strlen("/bin/") + ft_strlen(pip->in_args[0]) + 1;
