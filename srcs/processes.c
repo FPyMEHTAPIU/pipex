@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/30 13:03:22 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/30 13:09:14 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	last_child(t_pipex *pip, char **argv, char *path, pid_t p)
 		dup2(pip->fd_out, STDOUT_FILENO);
 		close(pip->pipfd[1]);
 		close(pip->fd_out);
-		path = check_paths_access(pip->paths, pip->out_args);
+		path = check_paths_access(pip->paths, pip->out_args, pip);
 		execve(path, pip->out_args, pip->paths);
 		perror("execve");
 		free(path);

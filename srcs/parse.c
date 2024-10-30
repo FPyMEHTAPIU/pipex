@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:35:51 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/30 12:53:13 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/30 13:08:57 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	**fetch_paths(char **envp)
 	return (paths);
 }
 
-char	*check_paths_access(char **paths, char **args)
+char	*check_paths_access(char **paths, char **args, t_pipex * pip)
 {
 	int		i;
 	char	*path;
@@ -62,8 +62,8 @@ char	*check_paths_access(char **paths, char **args)
 		free(path);
 		i++;
 	}
-	perror("access");
-	ft_free_strs(paths, count_strs(paths));
+	perror("path");
+	clean_pip(pip);
 	exit (1);
 }
 
@@ -78,7 +78,6 @@ char	**split_and_check(char *str, char del, t_pipex *pip)
 		clean_pip(pip);
 		exit (1);
 	}
-	ft_printf("%d\n", pip->fd_in);
 	return (strs);
 }
 
@@ -86,10 +85,8 @@ char	*parse_args(char **argv, t_pipex *pip)
 {
 	char	*path;
 
-	// for multiple num of args - run while until argv[i + 1] != NULL
 	pip->in_args = split_and_check(argv[2], ' ', pip);
 	pip->out_args = split_and_check(argv[3], ' ', pip);
-	path = check_paths_access(pip->paths, pip->in_args);
-	
+	path = check_paths_access(pip->paths, pip->in_args, pip);	
 	return (path);
 }
