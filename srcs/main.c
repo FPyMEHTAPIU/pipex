@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/30 13:12:26 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/30 15:34:45 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,15 @@ Provide 4 arguments!\n", 2);
 	exit(1);
 }
 
-static void	error_check(int argc, char **argv)
+static void	error_check(int argc, char **argv, t_pipex *pip)
 {
 	if (argc != 5)
 		error_ret(1);
 	if (access(argv[1], R_OK) != 0)
 		error_ret(2);
-	if (access(argv[4], W_OK) != 0 && \
-		access(argv[4], W_OK) != ENOENT)
+	if (access(argv[4], F_OK) == 0 && access(argv[4], W_OK) != 0)
 		error_ret(3);
+	pip->fd_out = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 }
 
 static t_pipex	init_pip(char **envp)
@@ -53,6 +53,7 @@ static t_pipex	init_pip(char **envp)
 	pip.in_args = NULL;
 	pip.out_args = NULL;
 	pip.paths = fetch_paths(envp);
+	//pip.thread = 0;
 	return (pip);
 }
 
@@ -62,7 +63,7 @@ int	main(int argc, char *argv[], char **envp)
 	char	*path;
 	pid_t	p;
 
-	error_check(argc, argv);
+	error_check(argc, argv, &pip);
 	pip = init_pip(envp);
 	path = parse_args(argv, &pip);
 	if (pipe(pip.pipfd) == -1)

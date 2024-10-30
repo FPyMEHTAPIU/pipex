@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:38:44 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/30 13:08:49 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/30 14:38:52 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct s_pipex
 	char	**in_args;
 	char	**out_args;
 	char	**paths;
+	int		thread;
 }	t_pipex;
 
 char	*parse_args(char **argv, t_pipex *pip);
