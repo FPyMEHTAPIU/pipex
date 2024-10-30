@@ -6,7 +6,7 @@
 #    By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/09 12:42:27 by msavelie          #+#    #+#              #
-#    Updated: 2024/10/11 10:49:48 by msavelie         ###   ########.fr        #
+#    Updated: 2024/10/30 10:50:11 by msavelie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,8 @@ SRCS = \
 	${SRC_DIR}/main.c \
 	${SRC_DIR}/parse.c \
 	${SRC_DIR}/processes.c \
-	${SRC_DIR}/clean.c
+	${SRC_DIR}/clean.c \
+	${SRC_DIR}/utils.c
 
 OBJS = ${SRCS:.c=.o}
 

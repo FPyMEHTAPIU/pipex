@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/28 17:44:51 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/30 11:08:11 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ Provide 4 arguments!\n");
 	exit(1);
 }
 
-static void	error_check(int argc, char **argv, t_pipex *pip)
+static void	error_check(int argc, char **argv)
 {
 	if (argc != 5)
 		error_ret(1);	
@@ -37,8 +37,6 @@ static void	error_check(int argc, char **argv, t_pipex *pip)
 	if (access(argv[4], W_OK) != 0 && \
 		access(argv[4], W_OK) != ENOENT)
 		error_ret(3);
-	if (pipe(pip->fd_in) < 0 || pipe(pip->fd_out) < 0)
-		error_ret(4);
 }
 
 static t_pipex	init_pip(char **envp)
@@ -48,6 +46,10 @@ static t_pipex	init_pip(char **envp)
 	pip.pipfd[0] = 0;
 	pip.pipfd[1] = 0;
 	pip.is_here_doc = false;
+	pip.fd_in = 0;
+	pip.fd_out = 0;
+	pip.in_args = NULL;
+	pip.out_args = NULL;
 	pip.paths = fetch_paths(envp);
 
 	return (pip);
@@ -58,31 +60,25 @@ int	main(int argc, char *argv[], char **envp)
 	t_pipex	pip;
 	char	*path;
 	pid_t	p;
-	char	*check_path;
-	char	**paths;
 
 	pip = init_pip(envp);
-	error_check(argc, argv, &pip);
+	error_check(argc, argv);
 	path = parse_args(argv, &pip);
 	ft_printf("exec path: %s\n", path);
+	if (pipe(pip.pipfd) == -1)
+		error_ret(4);
 	p = fork();
 	if (p < 0)
 		return (error_ret(5));
-	else if (p > 0)
+	else if (p == 0)
 	{
 		// close read and do writing
-		close(pip.pipfd[1]);
-		dup2(pip.pipfd[0], STDIN_FILENO);
+		dup2(pip.fd_in, STDIN_FILENO);
 		wait(NULL);
-		
+		dup2(pip.pipfd[1], STDOUT_FILENO);
+		execve(path, pip.in_args, pip.paths);
 		close(pip.pipfd[0]);
 		// write to the end of the first fd (fd_in)
-	}
-	else
-	{
-		
-		execve(path, pip.in_args, pip.paths);
-		
 	}
 	free(path);
 	clean_pip(&pip);
