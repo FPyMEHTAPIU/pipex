@@ -6,25 +6,25 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/30 11:53:38 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/30 13:04:05 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-static int	error_ret(int type)
+int	error_ret(int type)
 {
 	if (type == 1)
-		perror("Incorrect number of arguments! \
-Provide 4 arguments!\n");
+		ft_putstr_fd("Incorrect number of arguments! \
+Provide 4 arguments!\n", 2);
 	else if (type == 2)
-		perror("Don't have an access to an infile!\n");
+		ft_putstr_fd("Don't have an access to an infile!\n", 2);
 	else if (type == 3)
-		perror("Don't have an access to an outfile!\n");
+		ft_putstr_fd("Don't have an access to an outfile!\n", 2);
 	else if (type == 4)
-		perror("Pipe failed\n");
+		ft_putstr_fd("Pipe failed\n", 2);
 	else if (type == 5)
-		perror("Fork failed\n");
+		ft_putstr_fd("Fork failed\n", 2);
 	exit(1);
 }
 
@@ -61,53 +61,19 @@ int	main(int argc, char *argv[], char **envp)
 	char *path;
 	pid_t p;
 
-	pip = init_pip(envp);
 	error_check(argc, argv);
+	pip = init_pip(envp);
 	path = parse_args(argv, &pip);
-	ft_printf("exec path: %s\n", path);
-
 	if (pipe(pip.pipfd) == -1)
 		return (error_ret(4));
-
 	p = fork();
-	if (p < 0)
-		return (error_ret(5));
-	else if (p == 0)
-	{
-		dup2(pip.fd_in, STDIN_FILENO);
-		dup2(pip.pipfd[1], STDOUT_FILENO);
-
-		close(pip.pipfd[0]);
-		close(pip.fd_in);
-		execve(path, pip.in_args, pip.paths);
-		free(path);
-		perror("execve");
-		exit(1);
-	}
-
+	first_child(&pip, argv, path, p);
 	p = fork();
-	if (p < 0)
-		return (error_ret(5));
-	else if (p == 0)
-	{
-		dup2(pip.pipfd[0], STDIN_FILENO);
-		dup2(pip.fd_out, STDOUT_FILENO);
-		close(pip.pipfd[1]);
-		close(pip.fd_out);
-
-		path = check_paths_access(pip.paths, pip.out_args);
-		execve(path, pip.out_args, pip.paths);
-		perror("execve");
-		free(path);
-		exit(1);
-	}
-
+	last_child(&pip, argv, path, p);
 	close(pip.pipfd[0]);
 	close(pip.pipfd[1]);
-
 	wait(NULL);
 	wait(NULL);
-
 	free(path);
 	clean_pip(&pip);
 	return (0);

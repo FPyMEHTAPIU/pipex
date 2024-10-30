@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:35:51 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/30 11:52:54 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/30 12:53:13 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	**fetch_paths(char **envp)
 		{
 			check_path = ft_strdup(envp[i]);
 			if (!check_path)
-				perror("Malloc error!"), exit(1);
+				perror("malloc"), exit(1);
 		}
 		i++;
 	}
@@ -36,7 +36,7 @@ char	**fetch_paths(char **envp)
 		paths = ft_split(check_path + 5, ':');
 		free(check_path);
 		if (!paths)
-			perror("Malloc error!"), exit(1);
+			perror("malloc"), exit(1);
 	}
 	return (paths);
 }
@@ -62,7 +62,7 @@ char	*check_paths_access(char **paths, char **args)
 		free(path);
 		i++;
 	}
-	perror("You don't have access!");
+	perror("access");
 	ft_free_strs(paths, count_strs(paths));
 	exit (1);
 }
@@ -74,8 +74,7 @@ char	**split_and_check(char *str, char del, t_pipex *pip)
 	strs = ft_split(str, del);
 	if (!strs || !*strs)
 	{
-		perror("Split error!\n");
-		// free the rest memory inside the struct
+		perror("split");
 		clean_pip(pip);
 		exit (1);
 	}
@@ -88,8 +87,6 @@ char	*parse_args(char **argv, t_pipex *pip)
 	char	*path;
 
 	// for multiple num of args - run while until argv[i + 1] != NULL
-	pip->fd_in = open(argv[1], O_RDONLY);
-	pip->fd_out = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644 );
 	pip->in_args = split_and_check(argv[2], ' ', pip);
 	pip->out_args = split_and_check(argv[3], ' ', pip);
 	path = check_paths_access(pip->paths, pip->in_args);
