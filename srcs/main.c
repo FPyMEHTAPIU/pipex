@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/30 11:08:11 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/30 11:53:38 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,29 +57,57 @@ static t_pipex	init_pip(char **envp)
 
 int	main(int argc, char *argv[], char **envp)
 {
-	t_pipex	pip;
-	char	*path;
-	pid_t	p;
+	t_pipex pip;
+	char *path;
+	pid_t p;
 
 	pip = init_pip(envp);
 	error_check(argc, argv);
 	path = parse_args(argv, &pip);
 	ft_printf("exec path: %s\n", path);
+
 	if (pipe(pip.pipfd) == -1)
-		error_ret(4);
+		return (error_ret(4));
+
 	p = fork();
 	if (p < 0)
 		return (error_ret(5));
 	else if (p == 0)
 	{
-		// close read and do writing
 		dup2(pip.fd_in, STDIN_FILENO);
-		wait(NULL);
 		dup2(pip.pipfd[1], STDOUT_FILENO);
-		execve(path, pip.in_args, pip.paths);
+
 		close(pip.pipfd[0]);
-		// write to the end of the first fd (fd_in)
+		close(pip.fd_in);
+		execve(path, pip.in_args, pip.paths);
+		free(path);
+		perror("execve");
+		exit(1);
 	}
+
+	p = fork();
+	if (p < 0)
+		return (error_ret(5));
+	else if (p == 0)
+	{
+		dup2(pip.pipfd[0], STDIN_FILENO);
+		dup2(pip.fd_out, STDOUT_FILENO);
+		close(pip.pipfd[1]);
+		close(pip.fd_out);
+
+		path = check_paths_access(pip.paths, pip.out_args);
+		execve(path, pip.out_args, pip.paths);
+		perror("execve");
+		free(path);
+		exit(1);
+	}
+
+	close(pip.pipfd[0]);
+	close(pip.pipfd[1]);
+
+	wait(NULL);
+	wait(NULL);
+
 	free(path);
 	clean_pip(&pip);
 	return (0);
