@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 10:48:42 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/30 10:51:49 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/10/30 13:14:09 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	count_strs(char **strs)
 	int	i;
 
 	i = 0;
-	while (strs[i++]);
+	while (strs[i++])
+		;
 	return (i);
 }
