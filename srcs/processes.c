@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/30 15:41:27 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/01 11:24:47 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,14 @@ void	first_child(t_pipex *pip, char **argv, char *path, pid_t p)
 		close(pip->fd_in);
 		//(pip->thread)++;
 		if (execve(path, pip->in_args, pip->paths) == -1)
-			free(path);
-		free(path);
-		perror("execve");
-		exit(1);
+		{
+			clean_pip(pip);
+			perror("execve");
+			exit(1);
+		}
+		ft_printf("child 1\n");
+		//free_path(path);
+		//exit(0);
 	}
 }
 
@@ -40,7 +44,7 @@ void	last_child(t_pipex *pip, char **argv, char *path, pid_t p)
 		error_ret(5);
 	else if (p == 0 /*&& pip->thread > 0*/)
 	{
-		ft_printf("%s\n", argv[4]);
+		pip->fd_out = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		dup2(pip->pipfd[0], STDIN_FILENO);
 		dup2(pip->fd_out, STDOUT_FILENO);
 		close(pip->pipfd[0]);
@@ -48,9 +52,14 @@ void	last_child(t_pipex *pip, char **argv, char *path, pid_t p)
 		close(pip->fd_out);
 		path = check_paths_access(pip->paths, pip->out_args, pip);
 		if (execve(path, pip->out_args, pip->paths) == -1)
-			free(path);
-		perror("execve");
-		free(path);
-		exit(1);
+		{
+			ft_printf("child 2\n");
+			clean_pip(pip);
+			perror("execve");
+			exit(1);
+		}
+		ft_printf("child 2\n");
+		//free_path(path);
+		//exit(0);
 	}
 }

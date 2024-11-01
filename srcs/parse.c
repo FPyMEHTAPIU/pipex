@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:35:51 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/30 15:42:40 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/01 11:01:09 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ char	*check_paths_access(char **paths, char **args, t_pipex *pip)
 		ft_strlcat(path, args[0], path_len);
 		if (access(path, X_OK) == 0)
 			return (path);
-		free(path);
+		free_path(path);
 		i++;
 	}
 	perror(args[0]);

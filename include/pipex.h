@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:38:44 by msavelie          #+#    #+#             */
-/*   Updated: 2024/10/30 14:38:52 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/01 11:20:36 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef struct s_pipex
 	char	**out_args;
 	char	**paths;
 	int		thread;
+	char	*path;
 }	t_pipex;
 
 char	*parse_args(char **argv, t_pipex *pip);
@@ -41,5 +42,6 @@ char	*check_paths_access(char **paths, char **args, t_pipex *pip);
 void	first_child(t_pipex *pip, char **argv, char *path, pid_t p);
 void	last_child(t_pipex *pip, char **argv, char *path, pid_t p);
 int		error_ret(int type);
+void	free_path(char *path);
 
 #endif
