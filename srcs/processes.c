@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/01 11:24:47 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/01 12:49:33 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	first_child(t_pipex *pip, char **argv, char *path, pid_t p)
 {
 	if (p < 0)
-		error_ret(5);
+		error_ret(5, NULL);
 	else if (p == 0)
 	{
 		pip->fd_in = open(argv[1], O_RDONLY);
@@ -28,8 +28,8 @@ void	first_child(t_pipex *pip, char **argv, char *path, pid_t p)
 		if (execve(path, pip->in_args, pip->paths) == -1)
 		{
 			clean_pip(pip);
-			perror("execve");
-			exit(1);
+			perror(argv[0]);
+			//exit(1);
 		}
 		ft_printf("child 1\n");
 		//free_path(path);
@@ -41,7 +41,7 @@ void	last_child(t_pipex *pip, char **argv, char *path, pid_t p)
 {
 	(void) argv;
 	if (p < 0)
-		error_ret(5);
+		error_ret(5, NULL);
 	else if (p == 0 /*&& pip->thread > 0*/)
 	{
 		pip->fd_out = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -55,8 +55,8 @@ void	last_child(t_pipex *pip, char **argv, char *path, pid_t p)
 		{
 			ft_printf("child 2\n");
 			clean_pip(pip);
-			perror("execve");
-			exit(1);
+			perror(argv[0]);
+			//exit(1);
 		}
 		ft_printf("child 2\n");
 		//free_path(path);

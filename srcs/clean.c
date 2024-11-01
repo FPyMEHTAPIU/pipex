@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 10:45:18 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/01 11:27:52 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/01 13:31:29 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,14 @@
 static void	clean_strs(char **strs)
 {
 	int	i;
-
+	
 	if (!strs || !*strs)
 		return ;
 	i = 0;
 	while (strs[i])
 		free(strs[i++]);
 	free(strs);
+	strs = NULL;
 }
 
 void	free_path(char *path)

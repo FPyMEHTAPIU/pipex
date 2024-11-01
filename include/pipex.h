@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:38:44 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/01 11:20:36 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/01 12:38:37 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ int		count_strs(char **strs);
 char	*check_paths_access(char **paths, char **args, t_pipex *pip);
 void	first_child(t_pipex *pip, char **argv, char *path, pid_t p);
 void	last_child(t_pipex *pip, char **argv, char *path, pid_t p);
-int		error_ret(int type);
+int		error_ret(int type, char *arg);
 void	free_path(char *path);
+char	**check_args(char **args);
 
 #endif

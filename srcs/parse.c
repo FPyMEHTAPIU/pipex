@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:35:51 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/01 11:01:09 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/01 13:59:53 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	**fetch_paths(char **envp)
 		{
 			check_path = ft_strdup(envp[i]);
 			if (!check_path)
-				error_ret(6);
+				error_ret(6, NULL);
 		}
 		i++;
 	}
@@ -36,7 +36,7 @@ char	**fetch_paths(char **envp)
 		paths = ft_split(check_path + 5, ':');
 		free(check_path);
 		if (!paths)
-			error_ret(6);
+			error_ret(6, NULL);
 	}
 	return (paths);
 }
@@ -48,8 +48,9 @@ char	*check_paths_access(char **paths, char **args, t_pipex *pip)
 	size_t	path_len;
 
 	if (!paths || !*paths)
-		exit (1);
+		return (NULL);
 	i = 0;
+	args = check_args(args);
 	while (paths[i])
 	{
 		path_len = ft_strlen(paths[i]) + ft_strlen(args[0]) + 2;
@@ -71,13 +72,20 @@ char	**split_and_check(char *str, char del, t_pipex *pip)
 {
 	char	**strs;
 
+	if (!str || !*str)
+		return (NULL);
 	strs = ft_split(str, del);
-	if (!strs || !*strs)
+	if (!strs)
 	{
 		perror("split");
 		clean_pip(pip);
 		exit (1);
 	}
+	// else if (strs && !*strs)
+	// {
+	// 	free (strs);
+	// 	return (NULL);
+	// }
 	return (strs);
 }
 
@@ -88,5 +96,10 @@ char	*parse_args(char **argv, t_pipex *pip)
 	pip->in_args = split_and_check(argv[2], ' ', pip);
 	pip->out_args = split_and_check(argv[3], ' ', pip);
 	path = check_paths_access(pip->paths, pip->in_args, pip);
+	if (!path)
+	{
+		clean_pip(pip);
+		exit (1);
+	}
 	return (path);
 }
