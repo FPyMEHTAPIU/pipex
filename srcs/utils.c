@@ -30,3 +30,18 @@ char	**check_args(char **args)
 		return (new_args);
 	return (args);
 }
+
+bool	is_space_only(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == ' ')
+			i++;
+		else
+			return (false);
+	}
+	return (true);
+}

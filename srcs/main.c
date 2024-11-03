@@ -67,10 +67,11 @@ int	main(int argc, char *argv[], char **envp)
 	if (pipe(pip.pipfd) == -1)
 		return (error_ret(4, NULL));
 	p = fork();
-	first_child(&pip, argv, pip.path, p);
-	//free_path(path);
+	first_child(&pip, argv, p);
+	//wait(NULL);
+	//free_path(pip.path);
 	p = fork();
-	last_child(&pip, argv, pip.path, p);
+	last_child(&pip, argv, p);
 	close(pip.pipfd[0]);
 	close(pip.pipfd[1]);
 	wait(NULL);

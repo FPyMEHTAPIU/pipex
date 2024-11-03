@@ -12,7 +12,7 @@
 
 #include "../include/pipex.h"
 
-void	first_child(t_pipex *pip, char **argv, char *path, pid_t p)
+void	first_child(t_pipex *pip, char **argv, pid_t p)
 {
 	if (p < 0)
 		error_ret(5, NULL);
@@ -25,21 +25,20 @@ void	first_child(t_pipex *pip, char **argv, char *path, pid_t p)
 		close(pip->pipfd[0]);
 		close(pip->fd_in);
 		//(pip->thread)++;
-		if (execve(path, pip->in_args, pip->paths) == -1)
+		if (execve(pip->path, pip->in_args, pip->paths) == -1)
 		{
 			clean_pip(pip);
 			perror(argv[0]);
-			//exit(1);
+			exit(1);
 		}
 		ft_printf("child 1\n");
 		//free_path(path);
-		//exit(0);
+		exit(0);
 	}
 }
 
-void	last_child(t_pipex *pip, char **argv, char *path, pid_t p)
+void	last_child(t_pipex *pip, char **argv, pid_t p)
 {
-	(void) argv;
 	if (p < 0)
 		error_ret(5, NULL);
 	else if (p == 0 /*&& pip->thread > 0*/)
@@ -50,16 +49,17 @@ void	last_child(t_pipex *pip, char **argv, char *path, pid_t p)
 		close(pip->pipfd[0]);
 		close(pip->pipfd[1]);
 		close(pip->fd_out);
-		path = check_paths_access(pip->paths, pip->out_args, pip);
-		if (execve(path, pip->out_args, pip->paths) == -1)
+		//free_path(pip->path);
+		pip->path = check_paths_access(pip->paths, pip->out_args, pip);
+		if (execve(pip->path, pip->out_args, pip->paths) == -1)
 		{
 			ft_printf("child 2\n");
 			clean_pip(pip);
 			perror(argv[0]);
-			//exit(1);
+			exit(1);
 		}
 		ft_printf("child 2\n");
 		//free_path(path);
-		//exit(0);
+		exit(0);
 	}
 }

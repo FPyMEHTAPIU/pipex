@@ -39,10 +39,11 @@ void	clean_pip(t_pipex *pip);
 char	**fetch_paths(char **envp);
 int		count_strs(char **strs);
 char	*check_paths_access(char **paths, char **args, t_pipex *pip);
-void	first_child(t_pipex *pip, char **argv, char *path, pid_t p);
-void	last_child(t_pipex *pip, char **argv, char *path, pid_t p);
+void	first_child(t_pipex *pip, char **argv, pid_t p);
+void	last_child(t_pipex *pip, char **argv, pid_t p);
 int		error_ret(int type, char *arg);
 void	free_path(char *path);
 char	**check_args(char **args);
+bool	is_space_only(char *str);
 
 #endif

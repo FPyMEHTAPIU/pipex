@@ -71,8 +71,12 @@ char	*check_paths_access(char **paths, char **args, t_pipex *pip)
 char	**split_and_check(char *str, char del, t_pipex *pip)
 {
 	char	**strs;
+	bool	spaces_only;
 
 	if (!str || !*str)
+		return (NULL);
+	spaces_only = is_space_only(str);
+	if (spaces_only)
 		return (NULL);
 	strs = ft_split(str, del);
 	if (!strs)
@@ -81,11 +85,6 @@ char	**split_and_check(char *str, char del, t_pipex *pip)
 		clean_pip(pip);
 		exit (1);
 	}
-	// else if (strs && !*strs)
-	// {
-	// 	free (strs);
-	// 	return (NULL);
-	// }
 	return (strs);
 }
 
