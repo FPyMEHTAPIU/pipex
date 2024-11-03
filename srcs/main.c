@@ -52,7 +52,7 @@ static t_pipex	init_pip(char **envp)
 	pip.in_args = NULL;
 	pip.out_args = NULL;
 	pip.paths = fetch_paths(envp);
-	//pip.thread = 0;
+	pip.thread = 0;
 	return (pip);
 }
 

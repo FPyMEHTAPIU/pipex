@@ -24,7 +24,8 @@ void	first_child(t_pipex *pip, char **argv, pid_t p)
 		close(pip->pipfd[1]);
 		close(pip->pipfd[0]);
 		close(pip->fd_in);
-		//(pip->thread)++;
+		(pip->thread)++;
+		ft_printf("thread 1 = %d\n", pip->thread);
 		if (execve(pip->path, pip->in_args, pip->paths) == -1)
 		{
 			clean_pip(pip);
@@ -49,7 +50,9 @@ void	last_child(t_pipex *pip, char **argv, pid_t p)
 		close(pip->pipfd[0]);
 		close(pip->pipfd[1]);
 		close(pip->fd_out);
-		//free_path(pip->path);
+		ft_printf("thread = %d\n", pip->thread);
+		if (pip->thread == 1)
+			free_path(pip->path);
 		pip->path = check_paths_access(pip->paths, pip->out_args, pip);
 		if (execve(pip->path, pip->out_args, pip->paths) == -1)
 		{
