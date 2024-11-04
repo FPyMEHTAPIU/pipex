@@ -29,7 +29,6 @@ typedef struct s_pipex
 	char	**in_args;
 	char	**out_args;
 	char	**paths;
-	int		thread;
 	char	*path;
 }	t_pipex;
 

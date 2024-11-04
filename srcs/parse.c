@@ -90,15 +90,13 @@ char	**split_and_check(char *str, char del, t_pipex *pip)
 
 char	*parse_args(char **argv, t_pipex *pip)
 {
-	char	*path;
-
 	pip->in_args = split_and_check(argv[2], ' ', pip);
 	pip->out_args = split_and_check(argv[3], ' ', pip);
-	path = check_paths_access(pip->paths, pip->in_args, pip);
-	if (!path)
+	pip->path = check_paths_access(pip->paths, pip->in_args, pip);
+	if (!pip->path)
 	{
 		clean_pip(pip);
 		exit (1);
 	}
-	return (path);
+	return (pip->path);
 }

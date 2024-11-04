@@ -24,17 +24,12 @@ void	first_child(t_pipex *pip, char **argv, pid_t p)
 		close(pip->pipfd[1]);
 		close(pip->pipfd[0]);
 		close(pip->fd_in);
-		(pip->thread)++;
-		ft_printf("thread 1 = %d\n", pip->thread);
 		if (execve(pip->path, pip->in_args, pip->paths) == -1)
 		{
 			clean_pip(pip);
 			perror(argv[0]);
 			exit(1);
 		}
-		ft_printf("child 1\n");
-		//free_path(path);
-		exit(0);
 	}
 }
 
@@ -42,7 +37,7 @@ void	last_child(t_pipex *pip, char **argv, pid_t p)
 {
 	if (p < 0)
 		error_ret(5, NULL);
-	else if (p == 0 /*&& pip->thread > 0*/)
+	else if (p == 0)
 	{
 		pip->fd_out = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		dup2(pip->pipfd[0], STDIN_FILENO);
@@ -50,19 +45,13 @@ void	last_child(t_pipex *pip, char **argv, pid_t p)
 		close(pip->pipfd[0]);
 		close(pip->pipfd[1]);
 		close(pip->fd_out);
-		ft_printf("thread = %d\n", pip->thread);
-		if (pip->thread == 1)
-			free_path(pip->path);
 		pip->path = check_paths_access(pip->paths, pip->out_args, pip);
 		if (execve(pip->path, pip->out_args, pip->paths) == -1)
 		{
-			ft_printf("child 2\n");
 			clean_pip(pip);
+			pip->path = NULL;
 			perror(argv[0]);
 			exit(1);
 		}
-		ft_printf("child 2\n");
-		//free_path(path);
-		exit(0);
 	}
 }

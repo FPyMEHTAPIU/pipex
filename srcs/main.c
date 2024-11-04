@@ -52,7 +52,6 @@ static t_pipex	init_pip(char **envp)
 	pip.in_args = NULL;
 	pip.out_args = NULL;
 	pip.paths = fetch_paths(envp);
-	pip.thread = 0;
 	return (pip);
 }
 
@@ -68,8 +67,9 @@ int	main(int argc, char *argv[], char **envp)
 		return (error_ret(4, NULL));
 	p = fork();
 	first_child(&pip, argv, p);
-	//wait(NULL);
-	//free_path(pip.path);
+	waitpid(p, NULL, 0);
+	free_path(pip.path);
+	pip.path = NULL;
 	p = fork();
 	last_child(&pip, argv, p);
 	close(pip.pipfd[0]);
