@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 10:48:42 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/01 12:48:01 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/05 13:52:00 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,24 @@ bool	is_space_only(char *str)
 			return (false);
 	}
 	return (true);
+}
+
+char	**split_and_check(char *str, char del, t_pipex *pip)
+{
+	char	**strs;
+	bool	spaces_only;
+
+	if (!str || !*str)
+		return (NULL);
+	spaces_only = is_space_only(str);
+	if (spaces_only)
+		return (NULL);
+	strs = ft_split(str, del);
+	if (!strs)
+	{
+		perror("split");
+		clean_pip(pip);
+		exit (1);
+	}
+	return (strs);
 }
