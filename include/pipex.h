@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:38:44 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/05 10:33:06 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/05 13:48:58 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,19 +30,22 @@ typedef struct s_pipex
 	char	**out_args;
 	char	**paths;
 	char	*path;
+	int		thread;
 }	t_pipex;
 
-char	*parse_args(char **argv, t_pipex *pip);
+void	parse_args(char **argv, t_pipex *pip);
 char	**split_and_check(char *str, char del, t_pipex *pip);
 void	clean_pip(t_pipex *pip);
 char	**fetch_paths(char **envp);
 int		count_strs(char **strs);
-char	*check_paths_access(char **paths, char **args);
+char	*check_paths_access(char **paths, char **args, char **argv, t_pipex *pip);
 void	first_child(t_pipex *pip, char **argv, pid_t p);
 void	last_child(t_pipex *pip, char **argv, pid_t p);
 int		error_ret(int type, char *arg);
 void	free_path(char *path);
 char	**check_args(char **args);
 bool	is_space_only(char *str);
+void	print_exit(char *mes, char *cmd, int exit_code);
+char	*check_paths(char **paths, char **args);
 
 #endif

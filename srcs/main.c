@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/05 11:31:14 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/05 13:49:27 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,9 @@ static t_pipex	init_pip(char **envp)
 	pip.fd_out = 0;
 	pip.in_args = NULL;
 	pip.out_args = NULL;
+	pip.path = NULL;
 	pip.paths = fetch_paths(envp);
+	pip.thread = 0;
 	return (pip);
 }
 
@@ -62,7 +64,7 @@ int	main(int argc, char *argv[], char **envp)
 
 	error_check(argc, argv);
 	pip = init_pip(envp);
-	pip.path = parse_args(argv, &pip);
+	parse_args(argv, &pip);
 	if (pipe(pip.pipfd) == -1)
 		return (error_ret(4, NULL));
 	p = fork();

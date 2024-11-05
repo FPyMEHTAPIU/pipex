@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/05 10:42:38 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/05 13:47:35 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	first_child(t_pipex *pip, char **argv, pid_t p)
 		close(pip->pipfd[1]);
 		close(pip->pipfd[0]);
 		close(pip->fd_in);
+		pip->path = check_paths_access(pip->paths, pip->in_args, argv, pip);
 		if (execve(pip->path, pip->in_args, pip->paths) == -1)
 		{
 			clean_pip(pip);
@@ -39,13 +40,14 @@ void	last_child(t_pipex *pip, char **argv, pid_t p)
 		error_ret(5, NULL);
 	else if (p == 0)
 	{
+		(pip->thread)++;
 		pip->fd_out = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		dup2(pip->pipfd[0], STDIN_FILENO);
 		dup2(pip->fd_out, STDOUT_FILENO);
 		close(pip->pipfd[0]);
 		close(pip->pipfd[1]);
 		close(pip->fd_out);
-		pip->path = check_paths_access(pip->paths, pip->out_args);
+		pip->path = check_paths_access(pip->paths, pip->out_args, argv, pip);
 		if (execve(pip->path, pip->out_args, pip->paths) == -1)
 		{
 			clean_pip(pip);

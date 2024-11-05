@@ -6,7 +6,7 @@
 #    By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/09 12:42:27 by msavelie          #+#    #+#              #
-#    Updated: 2024/10/30 10:50:11 by msavelie         ###   ########.fr        #
+#    Updated: 2024/11/05 12:16:24 by msavelie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,9 @@ SRCS = \
 	${SRC_DIR}/parse.c \
 	${SRC_DIR}/processes.c \
 	${SRC_DIR}/clean.c \
-	${SRC_DIR}/utils.c
+	${SRC_DIR}/utils.c \
+	${SRC_DIR}/errors.c \
+	${SRC_DIR}/validate.c
 
 OBJS = ${SRCS:.c=.o}
 
