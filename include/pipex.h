@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:38:44 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/05 13:48:58 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/05 14:19:10 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,5 +47,6 @@ char	**check_args(char **args);
 bool	is_space_only(char *str);
 void	print_exit(char *mes, char *cmd, int exit_code);
 char	*check_paths(char **paths, char **args);
+void	exit_child(t_pipex *pip, char *arg, int exit_code);
 
 #endif
