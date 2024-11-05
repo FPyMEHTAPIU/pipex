@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/05 13:49:27 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/05 14:34:00 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void	error_check(int argc, char **argv)
 		error_ret(3, argv[4]);
 }
 
-static t_pipex	init_pip(char **envp)
+static t_pipex	init_pip(char **envp, int *exit_code)
 {
 	t_pipex	pip;
 
@@ -54,22 +54,23 @@ static t_pipex	init_pip(char **envp)
 	pip.path = NULL;
 	pip.paths = fetch_paths(envp);
 	pip.thread = 0;
+	pip.exit_code = exit_code;
 	return (pip);
 }
 
 int	main(int argc, char *argv[], char **envp)
 {
-	t_pipex	pip;
-	pid_t	p;
+	t_pipex		pip;
+	pid_t		p;
+	static int	exit_code;
 
 	error_check(argc, argv);
-	pip = init_pip(envp);
+	pip = init_pip(envp, &exit_code);
 	parse_args(argv, &pip);
 	if (pipe(pip.pipfd) == -1)
 		return (error_ret(4, NULL));
 	p = fork();
 	first_child(&pip, argv, p);
-	//waitpid(p, NULL, 0);
 	free_path(pip.path);
 	pip.path = NULL;
 	p = fork();
@@ -79,5 +80,5 @@ int	main(int argc, char *argv[], char **envp)
 	wait(NULL);
 	wait(NULL);
 	clean_pip(&pip);
-	return (0);
+	return (*pip.exit_code);
 }

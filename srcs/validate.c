@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 12:13:03 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/05 14:16:51 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/05 14:32:21 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,23 +39,21 @@ char	*check_paths(char **paths, char **args)
 char	*check_paths_access(char **paths, char **args, char **argv, t_pipex *pip)
 {
 	char	*path;
-	int		excode;
 
-	excode = 0;
 	args = check_args(args);
 	if (args[0][0] == '/' || args[0][0] == '.')
 		return (ft_strdup(args[0]));
 	else
 	{
 		if (pip->thread != 0)
-			excode = 127;
+			*pip->exit_code = 127;
 		path = check_paths(paths, args);
 		if (!path || args[0][0] == '\0')
 		{
 			clean_pip(pip);
 			if (path)
 				free(path);
-			print_exit("command not found\n", argv[2 + pip->thread], excode);
+			print_exit("command not found\n", argv[2 + pip->thread], *pip->exit_code);
 		}
 		return (path);
 	}
