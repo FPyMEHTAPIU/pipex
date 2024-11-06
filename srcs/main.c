@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/05 14:34:00 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/06 15:41:48 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,10 @@ static t_pipex	init_pip(char **envp, int *exit_code)
 
 int	main(int argc, char *argv[], char **envp)
 {
-	t_pipex		pip;
-	pid_t		p;
-	static int	exit_code;
+	t_pipex	pip;
+	pid_t	p;
+	int		exit_code;
+	int		status;
 
 	error_check(argc, argv);
 	pip = init_pip(envp, &exit_code);
@@ -77,8 +78,9 @@ int	main(int argc, char *argv[], char **envp)
 	last_child(&pip, argv, p);
 	close(pip.pipfd[0]);
 	close(pip.pipfd[1]);
-	wait(NULL);
-	wait(NULL);
+	while (wait(&status) > 0)
+		if (WIFEXITED(status))
+			exit_code = WEXITSTATUS(status);
 	clean_pip(&pip);
 	return (*pip.exit_code);
 }
