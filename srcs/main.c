@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/06 15:41:48 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/08 15:02:01 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,10 @@ Provide 4 arguments!\n", 2);
 	exit(0);
 }
 
-static void	error_check(int argc, char **argv)
+static void	error_check(int argc)
 {
 	if (argc != 5)
 		error_ret(1, NULL);
-	if (access(argv[1], R_OK) != 0)
-		error_ret(2, argv[1]);
-	if (access(argv[4], F_OK) == 0 && access(argv[4], W_OK) != 0)
-		error_ret(3, argv[4]);
 }
 
 static t_pipex	init_pip(char **envp, int *exit_code)
@@ -65,7 +61,7 @@ int	main(int argc, char *argv[], char **envp)
 	int		exit_code;
 	int		status;
 
-	error_check(argc, argv);
+	error_check(argc);
 	pip = init_pip(envp, &exit_code);
 	parse_args(argv, &pip);
 	if (pipe(pip.pipfd) == -1)
@@ -82,5 +78,5 @@ int	main(int argc, char *argv[], char **envp)
 		if (WIFEXITED(status))
 			exit_code = WEXITSTATUS(status);
 	clean_pip(&pip);
-	return (*pip.exit_code);
+	return (exit_code);
 }
