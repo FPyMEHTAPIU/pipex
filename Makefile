@@ -6,7 +6,7 @@
 #    By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/09 12:42:27 by msavelie          #+#    #+#              #
-#    Updated: 2024/11/05 12:16:24 by msavelie         ###   ########.fr        #
+#    Updated: 2024/11/08 15:10:52 by msavelie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,8 +43,6 @@ LIBFT_NAME = ./libft_updated/libft.a
 LIBFT_DIR = ./libft_updated
 
 RM = rm -rf
-AR = ar -rcs
-LIB = ranlib
 
 .PHONY = all clean fclean re
 
