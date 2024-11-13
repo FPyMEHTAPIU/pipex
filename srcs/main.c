@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/12 16:33:22 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/13 15:30:57 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,5 +76,5 @@ int	main(int argc, char *argv[], char **envp)
 		if (WIFEXITED(status))
 			pip.exit_code = WEXITSTATUS(status);
 	clean_pip(&pip);
-	return (pip.exit_code); // why here is 1 in " " " " commands???????
+	return (pip.exit_code);
 }

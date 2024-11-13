@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/12 16:36:53 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/13 16:32:29 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,10 @@ void	first_child(t_pipex *pip, char **argv, pid_t p)
 		close(pip->pipfd[1]);
 		close(pip->pipfd[0]);
 		close(pip->fd_in);
-		//ft_printf("child 1 error: %d\n", pip->exit_code);
-		pip->path = check_paths_access(pip->paths, pip->in_args, argv, pip);
+		///ft_printf("child 1.1 error: %d\n", pip->exit_code);
+		pip->path = check_paths_access(pip->paths, pip->in_args, argv[2], pip);
+		//ft_printf("child 1.2 error: %d\n", pip->exit_code);
+		//ft_printf("child 1 path: %s\n", pip->path);
 		if (execve(pip->path, pip->in_args, pip->paths) == -1)
 			exit_child(pip, argv[2], 127);
 	}
@@ -48,8 +50,10 @@ void	last_child(t_pipex *pip, char **argv, pid_t p)
 		close(pip->pipfd[0]);
 		close(pip->pipfd[1]);
 		close(pip->fd_out);
-		//ft_printf("child 2 error: %d\n", pip->exit_code);
-		pip->path = check_paths_access(pip->paths, pip->out_args, argv, pip);
+		//ft_printf("child 2.1 error: %d\n", pip->exit_code);
+		pip->path = check_paths_access(pip->paths, pip->out_args, argv[3], pip);
+		//ft_printf("child 2.2 error: %d\n", pip->exit_code);
+		//ft_printf("child 2 path: %s\n", pip->path);
 		if (execve(pip->path, pip->out_args, pip->paths) == -1)
 			exit_child(pip, argv[3], 127);
 	}
