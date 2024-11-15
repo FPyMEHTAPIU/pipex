@@ -6,11 +6,11 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/15 10:25:01 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/15 15:28:05 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/pipex.h"
+#include "../include/pipex_bonus.h"
 
 int	error_ret(int type, char *arg)
 {
@@ -36,7 +36,17 @@ static void	error_check(int argc)
 		error_ret(1, NULL);
 }
 
-static t_pipex	init_pip(char **envp)
+static int	count_mid_args(char **argv)
+{
+	int	count;
+
+	count = 0;
+	while (argv[count] != NULL)
+		count++;
+	return (count - 1);
+}
+
+static t_pipex	init_pip(char **envp, char **argv)
 {
 	t_pipex	pip;
 
@@ -44,11 +54,11 @@ static t_pipex	init_pip(char **envp)
 	pip.pipfd[1] = 0;
 	pip.fd_in = 0;
 	pip.fd_out = 0;
-	pip.in_args = NULL;
-	pip.out_args = NULL;
+	pip.args = NULL;
 	pip.path = NULL;
 	pip.paths = fetch_paths(envp);
 	pip.exit_code = 0;
+	pip.mid_args = count_mid_args(argv + 2);
 	return (pip);
 }
 
@@ -57,16 +67,22 @@ int	main(int argc, char *argv[], char **envp)
 	t_pipex	pip;
 	pid_t	p;
 	int		status;
+	int		i;
 
 	error_check(argc);
-	pip = init_pip(envp);
-	parse_args(argv, &pip);
+	pip = init_pip(envp, argv);
 	if (pipe(pip.pipfd) == -1)
 		return (error_ret(4, NULL));
-	p = fork();
-	first_child(&pip, argv, p);
-	free_path(pip.path);
-	pip.path = NULL;
+	i = 0;
+	while (i < pip.mid_args)
+	{
+		p = fork();
+		first_child(&pip, argv, p, i);
+		free_path(pip.path);
+		clean_strs(pip.args);
+		pip.path = NULL;
+		i++;
+	}
 	p = fork();
 	last_child(&pip, argv, p);
 	close(pip.pipfd[0]);
