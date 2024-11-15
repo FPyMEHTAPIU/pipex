@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/13 15:30:57 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/15 10:07:44 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ static t_pipex	init_pip(char **envp)
 	pip.out_args = NULL;
 	pip.path = NULL;
 	pip.paths = fetch_paths(envp);
-	pip.thread = 0;
 	pip.exit_code = 0;
 	return (pip);
 }

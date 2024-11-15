@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 12:13:03 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/13 16:32:19 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/15 10:06:12 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ char	*check_paths(char **paths, char **args)
 		ft_strlcpy(path, paths[i], path_len);
 		ft_strlcat(path, "/", path_len);
 		ft_strlcat(path, args[0], path_len);
-		//ft_printf("path in check: %s\n", path);
 		if (access(path, X_OK) == 0)
 			return (path);
 		free_path(path);
@@ -46,15 +45,15 @@ char	*check_paths_access(char **paths, char **args, char *arg, t_pipex *pip)
 		return (ft_strdup(args[0]));
 	else
 	{
+		if (ft_strchr(arg, '/'))
+			return (ft_strdup(arg));
 		path = check_paths(paths, args);
-		//ft_printf("path inout check: %s\n", path);
 		if (!path || args[0][0] == '\0')
 		{
 			clean_pip(pip);
 			if (path)
 				free(path);
 			pip->exit_code = 127;
-			//ft_printf("thread: %d\n", pip->thread);
 			print_exit("command not found\n", arg, pip->exit_code);
 		}
 		return (path);
