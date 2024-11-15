@@ -6,7 +6,7 @@
 #    By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/09 12:42:27 by msavelie          #+#    #+#              #
-#    Updated: 2024/11/08 15:10:52 by msavelie         ###   ########.fr        #
+#    Updated: 2024/11/15 10:22:35 by msavelie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ WHITE = \033[0;97m
 NAME = pipex
 
 SRC_DIR = ./srcs
+BONUS_DIR = ./bonus
 
 SRCS = \
 	${SRC_DIR}/main.c \
@@ -35,7 +36,17 @@ SRCS = \
 	${SRC_DIR}/errors.c \
 	${SRC_DIR}/validate.c
 
+BONUS = \
+	${BONUS_DIR}/main_bonus.c \
+	${BONUS_DIR}/processes_bonus.c \
+	${SRC_DIR}/parse.c \
+	${SRC_DIR}/clean.c \
+	${SRC_DIR}/utils.c \
+	${SRC_DIR}/errors.c \
+	${SRC_DIR}/validate.c
+
 OBJS = ${SRCS:.c=.o}
+BONUS_OBJS = ${BONUS:.c=.o}
 
 CFLAGS = -g -Wall -Werror -Wextra
 
@@ -44,7 +55,7 @@ LIBFT_DIR = ./libft_updated
 
 RM = rm -rf
 
-.PHONY = all clean fclean re
+.PHONY = all clean fclean re bonus
 
 all: ${LIBFT_NAME} ${NAME}
 
@@ -64,6 +75,7 @@ ${NAME}: ${OBJS}
 clean:
 	@echo "$(YELLOW)🚽 Deleting object files... 🚽$(DEF_COLOR)"
 	@${RM} ${OBJS}
+	@${RM} ${BONUS_OBJS}
 	@make clean -C ${LIBFT_DIR} --no-print-directory
 
 fclean: clean
@@ -72,5 +84,15 @@ fclean: clean
 	@echo "$(RED)🪦 Deleting pipex... 🪦$(DEF_COLOR)"
 	@${RM} ${NAME}
 	@echo "$(RED)☣️  CLEAR ☣️$(DEF_COLOR)"
+	@${RM} .bonus
 
 re: fclean all
+
+bonus: all .bonus
+
+.bonus: ${BONUS_OBJS} ${LIBFT_NAME}
+	@touch .bonus
+	@${RM} ${NAME}
+	@echo "$(BLUE)🛠  Compiling pipex with bonus... 🛠$(DEF_COLOR)"
+	@cc ${CFLAGS} ${BONUS_OBJS} libft.a -o ${NAME}
+	@echo "$(GREEN)🥳 Success!🥳$(DEF_COLOR)"
