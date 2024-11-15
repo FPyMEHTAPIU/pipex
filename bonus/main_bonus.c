@@ -6,52 +6,16 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/15 15:28:05 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/15 17:09:14 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
 
-int	error_ret(int type, char *arg)
-{
-	if (type == 1)
-		ft_putstr_fd("Incorrect number of arguments! \
-Provide 4 or more arguments!\n", 2);
-	else if (type == 2)
-		perror(arg);
-	else if (type == 3)
-		perror(arg);
-	else if (type == 4)
-		ft_putstr_fd("Pipe failed\n", 2);
-	else if (type == 5)
-		ft_putstr_fd("Fork failed\n", 2);
-	else if (type == 6)
-		ft_putstr_fd("Malloc failed\n", 2);
-	exit(0);
-}
-
-static void	error_check(int argc)
-{
-	if (argc < 5)
-		error_ret(1, NULL);
-}
-
-static int	count_mid_args(char **argv)
-{
-	int	count;
-
-	count = 0;
-	while (argv[count] != NULL)
-		count++;
-	return (count - 1);
-}
-
 static t_pipex	init_pip(char **envp, char **argv)
 {
 	t_pipex	pip;
 
-	pip.pipfd[0] = 0;
-	pip.pipfd[1] = 0;
 	pip.fd_in = 0;
 	pip.fd_out = 0;
 	pip.args = NULL;
@@ -59,7 +23,30 @@ static t_pipex	init_pip(char **envp, char **argv)
 	pip.paths = fetch_paths(envp);
 	pip.exit_code = 0;
 	pip.mid_args = count_mid_args(argv + 2);
+	pip.allocated_pipes = 0;
+	pip.pipfd = (int **)malloc(sizeof(int) * pip.mid_args + 2);
+	if (!pip.pipfd)
+	{
+		clean_pip(&pip);
+		error_ret(6, NULL);
+	}
 	return (pip);
+}
+
+static void	alloc_pipe(t_pipex *pip, int arg)
+{
+	pip->pipfd[arg] = (int *)malloc(sizeof(int) * 2);
+	if (!pip->pipfd[arg])
+	{
+		clean_pip(pip);
+		error_ret(6, NULL);
+	}
+	if (pipe(pip->pipfd[arg]) == -1)
+	{
+		clean_pip(pip);
+		error_ret(4, NULL);
+	}
+	pip->allocated_pipes++;
 }
 
 int	main(int argc, char *argv[], char **envp)
@@ -71,11 +58,10 @@ int	main(int argc, char *argv[], char **envp)
 
 	error_check(argc);
 	pip = init_pip(envp, argv);
-	if (pipe(pip.pipfd) == -1)
-		return (error_ret(4, NULL));
 	i = 0;
-	while (i < pip.mid_args)
+	while (i < pip.mid_args - 1)
 	{
+		alloc_pipe(&pip, i);
 		p = fork();
 		first_child(&pip, argv, p, i);
 		free_path(pip.path);
@@ -84,9 +70,9 @@ int	main(int argc, char *argv[], char **envp)
 		i++;
 	}
 	p = fork();
-	last_child(&pip, argv, p);
-	close(pip.pipfd[0]);
-	close(pip.pipfd[1]);
+	last_child(&pip, argv, p, --i);
+	close(pip.pipfd[i][0]);
+	close(pip.pipfd[i][1]);
 	while (wait(&status) > 0)
 		if (WIFEXITED(status))
 			pip.exit_code = WEXITSTATUS(status);

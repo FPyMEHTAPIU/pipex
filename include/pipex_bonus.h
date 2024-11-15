@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:38:44 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/15 15:28:00 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/15 17:05:39 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 typedef struct s_pipex
 {
-	int		pipfd[2];
+	int		**pipfd;
 	int		fd_in;
 	int		fd_out;
 	char	**args;
@@ -31,6 +31,7 @@ typedef struct s_pipex
 	int		exit_code;
 	bool	is_heredoc;
 	int		mid_args;
+	int		allocated_pipes;
 }	t_pipex;
 
 char	**split_and_check(char *str, char del, t_pipex *pip);
@@ -39,14 +40,16 @@ char	**fetch_paths(char **envp);
 int		count_strs(char **strs);
 char	*check_paths_access(char **paths, char **args, char *arg, t_pipex *pip);
 void	first_child(t_pipex *pip, char **argv, pid_t p, int arg);
-void	last_child(t_pipex *pip, char **argv, pid_t p);
+void	last_child(t_pipex *pip, char **argv, pid_t p, int arg);
 int		error_ret(int type, char *arg);
+void	error_check(int argc);
 void	free_path(char *path);
 char	**check_args(char **args);
 bool	is_space_only(char *str);
 void	print_exit(char *mes, char *cmd, int exit_code);
 char	*check_paths(char **paths, char **args);
-void	exit_child(t_pipex *pip, char *arg, int exit_code);
+void	exit_child(t_pipex *pip, char *arg, int exit_code, int i);
 void	clean_strs(char **strs);
+int		count_mid_args(char **argv);
 
 #endif

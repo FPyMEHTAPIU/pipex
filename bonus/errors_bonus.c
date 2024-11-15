@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   errors.c                                           :+:      :+:    :+:   */
+/*   errors_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 11:51:46 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/15 16:34:09 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/15 17:05:28 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/pipex.h"
+#include "../include/pipex_bonus.h"
 
 void	print_exit(char *mes, char *cmd, int exit_code)
 {
@@ -28,13 +28,13 @@ void	print_exit(char *mes, char *cmd, int exit_code)
 	exit (exit_code);
 }
 
-void	exit_child(t_pipex *pip, char *arg, int exit_code)
+void	exit_child(t_pipex *pip, char *arg, int exit_code, int i)
 {
 	pip->exit_code = exit_code;
 	clean_pip(pip);
 	perror(arg);
-	close(pip->pipfd[1]);
-	close(pip->pipfd[0]);
+	close(pip->pipfd[i][1]);
+	close(pip->pipfd[i][0]);
 	exit(exit_code);
 }
 
@@ -58,6 +58,6 @@ Provide 4 arguments!\n", 2);
 
 void	error_check(int argc)
 {
-	if (argc != 5)
+	if (argc < 5)
 		error_ret(1, NULL);
 }
