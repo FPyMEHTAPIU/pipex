@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/15 17:09:14 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/18 16:19:03 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ static t_pipex	init_pip(char **envp, char **argv)
 	pip.exit_code = 0;
 	pip.mid_args = count_mid_args(argv + 2);
 	pip.allocated_pipes = 0;
-	pip.pipfd = (int **)malloc(sizeof(int) * pip.mid_args + 2);
+	pip.pipe_index = 0;
+	pip.pipfd = (int **)malloc(sizeof(int) * pip.mid_args - 1);
 	if (!pip.pipfd)
 	{
 		clean_pip(&pip);
@@ -64,18 +65,30 @@ int	main(int argc, char *argv[], char **envp)
 		alloc_pipe(&pip, i);
 		p = fork();
 		first_child(&pip, argv, p, i);
+		pip.pipe_index++;
 		free_path(pip.path);
 		clean_strs(pip.args);
 		pip.path = NULL;
 		i++;
 	}
+	if (pip.pipe_index >= 1)
+		pip.pipe_index--;
 	p = fork();
 	last_child(&pip, argv, p, --i);
-	close(pip.pipfd[i][0]);
-	close(pip.pipfd[i][1]);
-	while (wait(&status) > 0)
+	i = 0;
+	while (i < pip.allocated_pipes)
+	{
+		close(pip.pipfd[i][0]);
+		close(pip.pipfd[i][1]);
+		i++;
+	}
+	//ft_printf("%d\n", pip.mid_args);
+	while (wait(&status) != -1) 
+	{
 		if (WIFEXITED(status))
 			pip.exit_code = WEXITSTATUS(status);
+	}
+		
 	clean_pip(&pip);
 	return (pip.exit_code);
 }

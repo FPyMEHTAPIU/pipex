@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:38:44 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/15 17:05:39 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/18 15:06:31 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ typedef struct s_pipex
 	bool	is_heredoc;
 	int		mid_args;
 	int		allocated_pipes;
+	int		pipe_index;
 }	t_pipex;
 
 char	**split_and_check(char *str, char del, t_pipex *pip);
