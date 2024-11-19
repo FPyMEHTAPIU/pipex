@@ -6,11 +6,40 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/18 16:19:03 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/19 13:20:11 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
+
+static void	alloc_pipes(t_pipex *pip)
+{
+	int	i;
+
+	pip->pipfd = (int **)malloc(sizeof(int) * pip->mid_args - 1);
+	if (!pip->pipfd)
+	{
+		clean_pip(pip);
+		error_ret(6, NULL);
+	}
+	i = 0;
+	while (i < pip->mid_args - 1)
+	{
+		pip->pipfd[i] = (int *)malloc(sizeof(int) * 2);
+		if (!pip->pipfd[i])
+		{
+			clean_pip(pip);
+			error_ret(6, NULL);
+		}
+		if (pipe(pip->pipfd[i]) == -1)
+		{
+			clean_pip(pip);
+			error_ret(4, NULL);
+		}
+		pip->allocated_pipes++;
+		i++;
+	}
+}
 
 static t_pipex	init_pip(char **envp, char **argv)
 {
@@ -25,29 +54,8 @@ static t_pipex	init_pip(char **envp, char **argv)
 	pip.mid_args = count_mid_args(argv + 2);
 	pip.allocated_pipes = 0;
 	pip.pipe_index = 0;
-	pip.pipfd = (int **)malloc(sizeof(int) * pip.mid_args - 1);
-	if (!pip.pipfd)
-	{
-		clean_pip(&pip);
-		error_ret(6, NULL);
-	}
+	alloc_pipes(&pip);
 	return (pip);
-}
-
-static void	alloc_pipe(t_pipex *pip, int arg)
-{
-	pip->pipfd[arg] = (int *)malloc(sizeof(int) * 2);
-	if (!pip->pipfd[arg])
-	{
-		clean_pip(pip);
-		error_ret(6, NULL);
-	}
-	if (pipe(pip->pipfd[arg]) == -1)
-	{
-		clean_pip(pip);
-		error_ret(4, NULL);
-	}
-	pip->allocated_pipes++;
 }
 
 int	main(int argc, char *argv[], char **envp)
@@ -60,21 +68,25 @@ int	main(int argc, char *argv[], char **envp)
 	error_check(argc);
 	pip = init_pip(envp, argv);
 	i = 0;
-	while (i < pip.mid_args - 1)
+	while (i < pip.mid_args)
 	{
-		alloc_pipe(&pip, i);
 		p = fork();
-		first_child(&pip, argv, p, i);
-		pip.pipe_index++;
+		if (i == pip.mid_args - 1)
+		{
+			pip.pipe_index--;
+			last_child(&pip, argv, p, i - 1);
+		}
+		else 
+		{
+			first_child(&pip, argv, p, i);
+			pip.pipe_index++;
+		}
 		free_path(pip.path);
 		clean_strs(pip.args);
 		pip.path = NULL;
 		i++;
 	}
-	if (pip.pipe_index >= 1)
-		pip.pipe_index--;
-	p = fork();
-	last_child(&pip, argv, p, --i);
+	ft_printf("allocated pipes: %d\n", pip.allocated_pipes);
 	i = 0;
 	while (i < pip.allocated_pipes)
 	{
@@ -82,7 +94,6 @@ int	main(int argc, char *argv[], char **envp)
 		close(pip.pipfd[i][1]);
 		i++;
 	}
-	//ft_printf("%d\n", pip.mid_args);
 	while (wait(&status) != -1) 
 	{
 		if (WIFEXITED(status))

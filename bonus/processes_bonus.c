@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/18 16:16:05 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/19 13:05:08 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,22 +29,13 @@ static void	read_first(t_pipex *pip, char **argv, int arg)
 	}
 }
 
-// static void	close_fds(t_pipex *pip)
-// {
-// 	if (pip->pipe_index > 0)
-// 	{
-// 		ft_printf("close index: %d\n", pip->pipe_index);
-// 		close(pip->pipfd[pip->pipe_index][1]);
-// 		close(pip->pipfd[pip->pipe_index][0]);
-// 	}
-// }
-
 void	first_child(t_pipex *pip, char **argv, pid_t p, int arg)
 {
 	if (p < 0)
 		error_ret(5, NULL);
 	else if (p == 0)
 	{
+		ft_printf("pipe index = %d\n", pip->pipe_index);
 		read_first(pip, argv, arg);
 		dup2(pip->pipfd[pip->pipe_index][1], STDOUT_FILENO);
 		close(pip->pipfd[pip->pipe_index][1]);
@@ -64,7 +55,7 @@ void	last_child(t_pipex *pip, char **argv, pid_t p, int arg)
 		pip->fd_out = open(argv[2 + pip->mid_args], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (pip->fd_out == -1)
 			exit_child(pip, argv[2 + pip->mid_args], 1, arg);
-		
+		ft_printf("last pipe index = %d\n", pip->pipe_index);
 		dup2(pip->pipfd[pip->pipe_index][0], STDIN_FILENO);
 		close(pip->pipfd[pip->pipe_index][0]);
 		dup2(pip->fd_out, STDOUT_FILENO);
