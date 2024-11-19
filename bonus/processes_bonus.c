@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/19 15:16:06 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/19 15:45:13 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,10 @@ void	last_child(t_pipex *pip, char **argv, pid_t p, int arg)
 		error_ret(5, NULL);
 	else if (p == 0)
 	{
-		pip->fd_out = open(argv[2 + pip->mid_args], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (pip->is_heredoc)
+			pip->fd_out = open(argv[2 + pip->mid_args], O_WRONLY | O_CREAT | O_APPEND, 0644);
+		else
+			pip->fd_out = open(argv[2 + pip->mid_args], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (pip->fd_out == -1)
 			exit_child(pip, argv[2 + pip->mid_args], 1, arg);
 		dup2(pip->pipfd[pip->pipe_index][0], STDIN_FILENO);
