@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/19 13:05:08 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/19 13:32:27 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,5 +65,31 @@ void	last_child(t_pipex *pip, char **argv, pid_t p, int arg)
 		pip->path = check_paths_access(pip->paths, pip->args, argv[1 + pip->mid_args], pip);
 		if (execve(pip->path, pip->args, pip->paths) == -1)
 			exit_child(pip, argv[1 + pip->mid_args], 127, arg);
+	}
+}
+
+void	pipex(t_pipex *pip, char **argv)
+{
+	int		i;
+	pid_t	p;
+
+	i = 0;
+	while (i < pip->mid_args)
+	{
+		p = fork();
+		if (i == pip->mid_args - 1)
+		{
+			pip->pipe_index--;
+			last_child(pip, argv, p, i - 1);
+		}
+		else 
+		{
+			first_child(pip, argv, p, i);
+			pip->pipe_index++;
+		}
+		free_path(pip->path);
+		clean_strs(pip->args);
+		pip->path = NULL;
+		i++;
 	}
 }

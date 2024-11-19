@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 10:45:18 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/15 16:51:10 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/19 13:23:08 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,30 +33,30 @@ void	free_path(char *path)
 	path = NULL;
 }
 
-static void clean_pipes(int **pipfd, t_pipex *pip)
+static void clean_pipes(t_pipex *pip)
 {
 	int	i;
 
-	if (!pipfd)
+	if (!pip->pipfd)
 		return ;
-	if (pipfd && !*pipfd)
+	if (pip->pipfd && !*pip->pipfd)
 	{
-		free(pipfd);
+		free(pip->pipfd);
 		return ;
 	}
 	i = 0;
 	while (i < pip->allocated_pipes)
 	{
-		free(pipfd[i]);
+		free(pip->pipfd[i]);
 		i++;
 	}
 	pip->allocated_pipes = 0;
-	free(pipfd);
+	free(pip->pipfd);
 }
 
 void	clean_pip(t_pipex *pip)
 {
-	clean_pipes(pip->pipfd, pip);
+	clean_pipes(pip);
 	clean_strs(pip->args);
 	clean_strs(pip->paths);
 	free_path(pip->path);
