@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 13:24:43 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/19 13:26:03 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/19 13:56:32 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	alloc_pipes(t_pipex *pip)
 {
 	int	i;
 
-	pip->pipfd = (int **)malloc(sizeof(int) * pip->mid_args - 1);
+	pip->pipfd = (int **)malloc(sizeof(int *) * pip->mid_args - 1);
 	if (!pip->pipfd)
 	{
 		clean_pip(pip);
@@ -48,8 +48,10 @@ void	close_fds(t_pipex *pip)
 	i = 0;
 	while (i < pip->allocated_pipes)
 	{
-		close(pip->pipfd[i][0]);
-		close(pip->pipfd[i][1]);
+		if (pip->pipfd[i][0] != -1)
+			close(pip->pipfd[i][0]);
+		if (pip->pipfd[i][1] != -1)
+			close(pip->pipfd[i][1]);
 		i++;
 	}
 }

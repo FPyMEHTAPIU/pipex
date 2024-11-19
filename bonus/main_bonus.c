@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/19 13:32:15 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/19 15:16:14 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,11 @@ int	main(int argc, char *argv[], char **envp)
 	error_check(argc);
 	pip = init_pip(envp, argv);
 	pipex(&pip, argv);
-	//ft_printf("allocated pipes: %d\n", pip.allocated_pipes);
-	close_fds(&pip);
 	while (wait(&status) != -1) 
 	{
-		ft_printf("here\n");
 		if (WIFEXITED(status))
 			pip.exit_code = WEXITSTATUS(status);
 	}
-		
 	clean_pip(&pip);
 	return (pip.exit_code);
 }

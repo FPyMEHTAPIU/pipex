@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/19 13:32:27 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/19 15:16:06 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@ void	first_child(t_pipex *pip, char **argv, pid_t p, int arg)
 		error_ret(5, NULL);
 	else if (p == 0)
 	{
-		ft_printf("pipe index = %d\n", pip->pipe_index);
 		read_first(pip, argv, arg);
 		dup2(pip->pipfd[pip->pipe_index][1], STDOUT_FILENO);
 		close(pip->pipfd[pip->pipe_index][1]);
+		close_fds(pip);
 		pip->args = split_and_check(argv[2 + arg], ' ', pip);
 		pip->path = check_paths_access(pip->paths, pip->args, argv[2 + arg], pip);
 		if (execve(pip->path, pip->args, pip->paths) == -1)
@@ -55,12 +55,11 @@ void	last_child(t_pipex *pip, char **argv, pid_t p, int arg)
 		pip->fd_out = open(argv[2 + pip->mid_args], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (pip->fd_out == -1)
 			exit_child(pip, argv[2 + pip->mid_args], 1, arg);
-		ft_printf("last pipe index = %d\n", pip->pipe_index);
 		dup2(pip->pipfd[pip->pipe_index][0], STDIN_FILENO);
 		close(pip->pipfd[pip->pipe_index][0]);
 		dup2(pip->fd_out, STDOUT_FILENO);
 		close(pip->fd_out);
-
+		close_fds(pip);
 		pip->args = split_and_check(argv[1 + pip->mid_args], ' ', pip);
 		pip->path = check_paths_access(pip->paths, pip->args, argv[1 + pip->mid_args], pip);
 		if (execve(pip->path, pip->args, pip->paths) == -1)
@@ -92,4 +91,5 @@ void	pipex(t_pipex *pip, char **argv)
 		pip->path = NULL;
 		i++;
 	}
+	close_fds(pip);
 }
