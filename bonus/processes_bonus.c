@@ -6,51 +6,30 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/20 15:09:45 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/20 16:06:01 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
 
-static void	handle_here_doc(t_pipex *pip, char **argv)
-{
-	char	*str;
-
-	pip->fd_in = open(".heredoc_temp", O_RDWR | O_CREAT | O_TRUNC, 0644);
-	if (!pip->fd_in)
-	{
-		clean_pip(pip);
-		error_ret(7, NULL);
-	}
-	ft_putstr_fd("pipe heredoc> ", STDOUT_FILENO);
-	str = get_next_line(STDIN_FILENO);
-	while (str && !ft_strnstr(str, argv[1], ft_strlen(argv[1])))
-	{
-		ft_putstr_fd(str, pip->fd_in);
-		free(str);
-		ft_putstr_fd("pipe heredoc> ", STDOUT_FILENO);
-		str = get_next_line(STDIN_FILENO);
-	}
-	if (str)
-		free(str);
-	dup2(pip->fd_in, STDIN_FILENO);
-	close(pip->fd_in);
-}
-
 static void	read_first(t_pipex *pip, char **argv, int arg)
 {
 	if (arg == 0)
 	{
-		if (pip->is_heredoc == 1)
-			handle_here_doc(pip, argv);
-		else
+		if (pip->is_heredoc == 0)
 		{
 			pip->fd_in = open(argv[1], O_RDONLY);
 			if (pip->fd_in == -1)
 				exit_child(pip, argv[1], 1, arg);
-			dup2(pip->fd_in, STDIN_FILENO);
-			close(pip->fd_in);
-		}	
+		}
+		else
+		{
+			pip->fd_in = open(".heredoc_temp", O_RDONLY);
+			if (pip->fd_in == -1)
+				exit_child(pip, ".heredoc_temp", 1, arg);
+		}
+		dup2(pip->fd_in, STDIN_FILENO);
+		close(pip->fd_in);
 	}
 	else
 	{

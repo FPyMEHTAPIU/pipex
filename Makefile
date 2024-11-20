@@ -6,7 +6,7 @@
 #    By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/09 12:42:27 by msavelie          #+#    #+#              #
-#    Updated: 2024/11/19 13:26:31 by msavelie         ###   ########.fr        #
+#    Updated: 2024/11/20 15:40:48 by msavelie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,7 +44,7 @@ BONUS = \
 	${BONUS_DIR}/utils_bonus.c \
 	${BONUS_DIR}/errors_bonus.c \
 	${BONUS_DIR}/pipes_bonus.c \
-	${SRC_DIR}/validate.c
+	${BONUS_DIR}/validate_bonus.c
 
 OBJS = ${SRCS:.c=.o}
 BONUS_OBJS = ${BONUS:.c=.o}
