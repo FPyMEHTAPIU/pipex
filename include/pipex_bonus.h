@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:38:44 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/19 15:15:55 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/20 13:24:33 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct s_pipex
 	char	**paths;
 	char	*path;
 	int		exit_code;
-	bool	is_heredoc;
+	int		is_heredoc;
 	int		mid_args;
 	int		allocated_pipes;
 	int		pipe_index;
