@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 11:51:46 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/20 14:33:27 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/22 13:58:57 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,19 @@ Provide 4 arguments!\n", 2);
 		ft_putstr_fd("Malloc failed\n", 2);
 	else if (type == 7)
 		ft_putstr_fd("FD handling error\n", 2);
+	else if (type == 8)
+		ft_putstr_fd("Incorrect number of arguments! \
+Provide 5 arguments!\n", 2);
 	exit(0);
 }
 
-void	error_check(int argc)
+void	error_check(int argc, char **argv)
 {
-	if (argc < 5)
+	if (ft_strnstr(argv[1], "here_doc", ft_strlen(argv[1])))
+	{
+		if (argc < 6)
+			error_ret(8, NULL);
+	}
+	else if (argc < 5)
 		error_ret(1, NULL);
 }

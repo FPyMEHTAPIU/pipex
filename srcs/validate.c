@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 12:13:03 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/15 10:06:12 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/22 13:53:29 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ char	*check_paths(char **paths, char **args)
 		ft_strlcpy(path, paths[i], path_len);
 		ft_strlcat(path, "/", path_len);
 		ft_strlcat(path, args[0], path_len);
-		if (access(path, X_OK) == 0)
+		if (access(path, F_OK) == 0)
 			return (path);
 		free_path(path);
 		i++;

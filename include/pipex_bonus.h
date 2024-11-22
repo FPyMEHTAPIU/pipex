@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:38:44 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/20 13:24:33 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/22 13:55:58 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ char	*check_paths_access(char **paths, char **args, char *arg, t_pipex *pip);
 void	first_child(t_pipex *pip, char **argv, pid_t p, int arg);
 void	last_child(t_pipex *pip, char **argv, pid_t p, int arg);
 int		error_ret(int type, char *arg);
-void	error_check(int argc);
+void	error_check(int argc, char **argv);
 void	free_path(char *path);
 char	**check_args(char **args);
 bool	is_space_only(char *str);
@@ -55,5 +55,6 @@ int		count_mid_args(char **argv);
 void	alloc_pipes(t_pipex *pip);
 void	close_fds(t_pipex *pip);
 void	pipex(t_pipex *pip, char **argv);
+int		check_permission(t_pipex *pip, char **argv, int arg, bool first);
 
 #endif

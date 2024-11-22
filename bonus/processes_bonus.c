@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/20 16:06:01 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/22 12:57:52 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,7 @@ static void	read_first(t_pipex *pip, char **argv, int arg)
 	if (arg == 0)
 	{
 		if (pip->is_heredoc == 0)
-		{
-			pip->fd_in = open(argv[1], O_RDONLY);
-			if (pip->fd_in == -1)
-				exit_child(pip, argv[1], 1, arg);
-		}
+			check_permission(pip, argv, arg, true);
 		else
 		{
 			pip->fd_in = open(".heredoc_temp", O_RDONLY);
@@ -61,12 +57,7 @@ void	last_child(t_pipex *pip, char **argv, pid_t p, int arg)
 		error_ret(5, NULL);
 	else if (p == 0)
 	{
-		if (pip->is_heredoc == 1)
-			pip->fd_out = open(argv[2 + pip->mid_args], O_WRONLY | O_CREAT | O_APPEND, 0644);
-		else
-			pip->fd_out = open(argv[2 + pip->mid_args], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (pip->fd_out == -1)
-			exit_child(pip, argv[2 + pip->mid_args], 1, arg);
+		check_permission(pip, argv, arg, false);
 		dup2(pip->pipfd[pip->pipe_index][0], STDIN_FILENO);
 		close(pip->pipfd[pip->pipe_index][0]);
 		dup2(pip->fd_out, STDOUT_FILENO);

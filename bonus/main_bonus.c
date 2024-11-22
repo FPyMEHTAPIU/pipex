@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/20 16:05:29 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/22 13:55:49 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	main(int argc, char *argv[], char **envp)
 	t_pipex	pip;
 	int		status;
 
-	error_check(argc);
+	error_check(argc, argv);
 	pip = init_pip(envp, argv);
 	handle_here_doc(&pip, argv + pip.is_heredoc);
 	pipex(&pip, argv + pip.is_heredoc);
