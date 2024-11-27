@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/15 10:07:00 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/27 14:54:02 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,10 @@
 void	first_child(t_pipex *pip, char **argv, pid_t p)
 {
 	if (p < 0)
+	{
+		clean_pip(pip);
 		error_ret(5, NULL);
+	}
 	else if (p == 0)
 	{
 		pip->fd_in = open(argv[1], O_RDONLY);
@@ -35,7 +38,10 @@ void	first_child(t_pipex *pip, char **argv, pid_t p)
 void	last_child(t_pipex *pip, char **argv, pid_t p)
 {
 	if (p < 0)
+	{
+		clean_pip(pip);
 		error_ret(5, NULL);
+	}
 	else if (p == 0)
 	{
 		pip->fd_out = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);

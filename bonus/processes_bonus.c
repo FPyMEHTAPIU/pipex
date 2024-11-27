@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/27 13:03:05 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/27 15:26:53 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,21 @@ static void	read_first(t_pipex *pip, char **argv, int arg)
 	}
 }
 
-void	first_child(t_pipex *pip, char **argv, pid_t p, int arg)
+static void	first_child(t_pipex *pip, char **argv, pid_t *p, int arg)
 {
-	if (p < 0)
+	if (p[arg] < 0)
+	{
+		clean_pip(pip);
+		free(p);
 		error_ret(5, NULL);
-	else if (p == 0)
+	}
+	else if (p[arg] == 0)
 	{
 		read_first(pip, argv, arg);
 		dup2(pip->pipfd[pip->pipe_index][1], STDOUT_FILENO);
 		close(pip->pipfd[pip->pipe_index][1]);
 		close_fds(pip);
+		ft_printf("pipe index = %d\n", pip->pipe_index);
 		pip->args = split_and_check(argv[2 + arg], ' ', pip);
 		pip->path = check_paths_access(pip->paths, pip->args, argv[2 + arg], pip);
 		if (execve(pip->path, pip->args, pip->paths) == -1)
@@ -51,11 +56,15 @@ void	first_child(t_pipex *pip, char **argv, pid_t p, int arg)
 	}
 }
 
-void	last_child(t_pipex *pip, char **argv, pid_t p, int arg)
+static void	last_child(t_pipex *pip, char **argv, pid_t *p, int arg)
 {
-	if (p < 0)
+	if (p[arg + 1] < 0)
+	{
+		clean_pip(pip);
+		free(p);
 		error_ret(5, NULL);
-	else if (p == 0)
+	}
+	else if (p[arg + 1] == 0)
 	{
 		check_permission(pip, argv, arg, false);
 		dup2(pip->pipfd[pip->pipe_index][0], STDIN_FILENO);	
@@ -63,6 +72,7 @@ void	last_child(t_pipex *pip, char **argv, pid_t p, int arg)
 		dup2(pip->fd_out, STDOUT_FILENO);
 		close(pip->fd_out);
 		close_fds(pip);
+		ft_printf("last pipe index = %d\n", pip->pipe_index);
 		pip->args = split_and_check(argv[1 + pip->mid_args], ' ', pip);
 		pip->path = check_paths_access(pip->paths, pip->args, argv[1 + pip->mid_args], pip);
 		if (execve(pip->path, pip->args, pip->paths) == -1)
@@ -73,22 +83,27 @@ void	last_child(t_pipex *pip, char **argv, pid_t p, int arg)
 void	pipex(t_pipex *pip, char **argv)
 {
 	int		i;
-	pid_t	p[2];
+	pid_t	*p;
 	int		status;
 
 	i = 0;
+	p = malloc (sizeof(pid_t) * pip->mid_args);
+	if (!p)
+	{
+		clean_pip(pip);
+		error_ret(6, NULL);
+	}
 	while (i < pip->mid_args)
 	{
+		p[i] = fork();
 		if (i == pip->mid_args - 1)
 		{
-			p[1] = fork();
 			pip->pipe_index--;
-			last_child(pip, argv, p[1], i - 1);
+			last_child(pip, argv, p, i - 1);
 		}
 		else 
 		{
-			p[0] = fork();
-			first_child(pip, argv, p[0], i);
+			first_child(pip, argv, p, i);
 			pip->pipe_index++;
 		}
 		free_path(pip->path);
@@ -96,9 +111,16 @@ void	pipex(t_pipex *pip, char **argv)
 		pip->path = NULL;
 		i++;
 	}
-	while (waitpid(p[0], &status, 0) != -1) 
-		;
-	if ((waitpid(p[0], &status, 0) != -1) && WIFEXITED(status))
-		pip->exit_code = WEXITSTATUS(status);
+	i = 0;
+	while (i < pip->mid_args)
+	{
+		ft_printf("mid args = %d\n", pip->mid_args);
+		ft_printf("i = %d\n", i);
+		if (waitpid(p[i], &status, 0) > 0 && WIFEXITED(status))
+			if (i == pip->mid_args - 1)
+				pip->exit_code = WEXITSTATUS(status);
+		i++;
+	}
+	free(p);
 	close_fds(pip);
 }

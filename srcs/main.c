@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/27 12:59:59 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/27 14:11:34 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,11 @@ int	main(int argc, char *argv[], char **envp)
 	last_child(&pip, argv, p[1]);
 	close(pip.pipfd[0]);
 	close(pip.pipfd[1]);
-	waitpid(p[0], &status, 0);
-	if (waitpid(p[1], &status, 0) != -1 && WIFEXITED(status))
-		pip.exit_code = WEXITSTATUS(status);
+	for (int i = 0; i < 2; i++) {
+		if (waitpid(p[i], &status, 0) > 0 && WIFEXITED(status))
+			if (i == 1)
+				pip.exit_code = WEXITSTATUS(status);
+	}
 	clean_pip(&pip);
 	return (pip.exit_code);
 }

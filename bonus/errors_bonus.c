@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 11:51:46 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/27 12:10:25 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/27 14:36:34 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	error_ret(int type, char *arg)
 	ft_putstr_fd("pipex: ", 2);
 	if (type == 1)
 		ft_putstr_fd("Incorrect number of arguments! \
-Provide 4 arguments!\n", 2);
+Provide at least 4 arguments!\n", 2);
 	else if (type == 2)
 		perror(arg);
 	else if (type == 3)
