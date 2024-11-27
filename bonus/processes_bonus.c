@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/22 12:57:52 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/27 13:03:05 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	last_child(t_pipex *pip, char **argv, pid_t p, int arg)
 	else if (p == 0)
 	{
 		check_permission(pip, argv, arg, false);
-		dup2(pip->pipfd[pip->pipe_index][0], STDIN_FILENO);
+		dup2(pip->pipfd[pip->pipe_index][0], STDIN_FILENO);	
 		close(pip->pipfd[pip->pipe_index][0]);
 		dup2(pip->fd_out, STDOUT_FILENO);
 		close(pip->fd_out);
@@ -73,20 +73,22 @@ void	last_child(t_pipex *pip, char **argv, pid_t p, int arg)
 void	pipex(t_pipex *pip, char **argv)
 {
 	int		i;
-	pid_t	p;
+	pid_t	p[2];
+	int		status;
 
 	i = 0;
 	while (i < pip->mid_args)
 	{
-		p = fork();
 		if (i == pip->mid_args - 1)
 		{
+			p[1] = fork();
 			pip->pipe_index--;
-			last_child(pip, argv, p, i - 1);
+			last_child(pip, argv, p[1], i - 1);
 		}
 		else 
 		{
-			first_child(pip, argv, p, i);
+			p[0] = fork();
+			first_child(pip, argv, p[0], i);
 			pip->pipe_index++;
 		}
 		free_path(pip->path);
@@ -94,5 +96,9 @@ void	pipex(t_pipex *pip, char **argv)
 		pip->path = NULL;
 		i++;
 	}
+	while (waitpid(p[0], &status, 0) != -1) 
+		;
+	if ((waitpid(p[0], &status, 0) != -1) && WIFEXITED(status))
+		pip->exit_code = WEXITSTATUS(status);
 	close_fds(pip);
 }

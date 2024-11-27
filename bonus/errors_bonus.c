@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 11:51:46 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/22 13:58:57 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/27 12:10:25 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	print_exit(char *mes, char *cmd, int exit_code)
 		ft_strlcpy(full_msg, cmd, mes_len);
 	ft_strlcat(full_msg, ": ", mes_len);
 	ft_strlcat(full_msg, mes, mes_len);
+	ft_putstr_fd("pipex: ", 2);
 	ft_putstr_fd(full_msg, 2);
 	free (full_msg);
 	exit (exit_code);
@@ -31,15 +32,17 @@ void	print_exit(char *mes, char *cmd, int exit_code)
 void	exit_child(t_pipex *pip, char *arg, int exit_code, int i)
 {
 	pip->exit_code = exit_code;
-	close(pip->pipfd[i][1]);
 	close(pip->pipfd[i][0]);
+	close(pip->pipfd[i][1]);
 	clean_pip(pip);
+	ft_putstr_fd("pipex: ", 2);
 	perror(arg);
 	exit(exit_code);
 }
 
 int	error_ret(int type, char *arg)
 {
+	ft_putstr_fd("pipex: ", 2);
 	if (type == 1)
 		ft_putstr_fd("Incorrect number of arguments! \
 Provide 4 arguments!\n", 2);

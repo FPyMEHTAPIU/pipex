@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/22 13:55:49 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/27 13:07:23 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,11 @@ static void	handle_here_doc(t_pipex *pip, char **argv)
 		clean_pip(pip);
 		error_ret(7, NULL);
 	}
-	ft_putstr_fd("pipe heredoc> ", STDOUT_FILENO);
 	str = get_next_line(STDIN_FILENO);
 	while (str && !ft_strnstr(str, argv[1], ft_strlen(argv[1])))
 	{
 		ft_putstr_fd(str, pip->fd_in);
 		free(str);
-		ft_putstr_fd("pipe heredoc> ", STDOUT_FILENO);
 		str = get_next_line(STDIN_FILENO);
 	}
 	if (str)
@@ -62,17 +60,11 @@ static t_pipex	init_pip(char **envp, char **argv)
 int	main(int argc, char *argv[], char **envp)
 {
 	t_pipex	pip;
-	int		status;
 
 	error_check(argc, argv);
 	pip = init_pip(envp, argv);
 	handle_here_doc(&pip, argv + pip.is_heredoc);
 	pipex(&pip, argv + pip.is_heredoc);
-	while (wait(&status) != -1) 
-	{
-		if (WIFEXITED(status))
-			pip.exit_code = WEXITSTATUS(status);
-	}
 	if (pip.is_heredoc == 1)
 	{
 		close(pip.fd_in);
