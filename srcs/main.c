@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/27 14:11:34 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/27 17:11:47 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ static t_pipex	init_pip(char **envp)
 {
 	t_pipex	pip;
 
-	pip.pipfd[0] = 0;
-	pip.pipfd[1] = 0;
-	pip.fd_in = 0;
-	pip.fd_out = 0;
+	pip.pipfd[0] = -1;
+	pip.pipfd[1] = -1;
+	pip.fd_in = -1;
+	pip.fd_out = -1;
 	pip.in_args = NULL;
 	pip.out_args = NULL;
 	pip.path = NULL;
@@ -48,12 +48,10 @@ int	main(int argc, char *argv[], char **envp)
 	pip.path = NULL;
 	p[1] = fork();
 	last_child(&pip, argv, p[1]);
-	close(pip.pipfd[0]);
-	close(pip.pipfd[1]);
+	close_fds(&pip);
 	for (int i = 0; i < 2; i++) {
-		if (waitpid(p[i], &status, 0) > 0 && WIFEXITED(status))
-			if (i == 1)
-				pip.exit_code = WEXITSTATUS(status);
+		if (wait(&status) == p[1] && WIFEXITED(status))
+			pip.exit_code = WEXITSTATUS(status);
 	}
 	clean_pip(&pip);
 	return (pip.exit_code);

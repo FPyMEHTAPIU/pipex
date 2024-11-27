@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 13:24:43 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/19 13:56:32 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/27 17:05:27 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,8 @@ void	close_fds(t_pipex *pip)
 			close(pip->pipfd[i][1]);
 		i++;
 	}
+	if (pip->fd_in != -1)
+		close(pip->fd_in);
+	if (pip->fd_out != -1)
+		close(pip->fd_out);
 }

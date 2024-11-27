@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/27 15:26:53 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/27 17:09:00 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ static void	first_child(t_pipex *pip, char **argv, pid_t *p, int arg)
 		dup2(pip->pipfd[pip->pipe_index][1], STDOUT_FILENO);
 		close(pip->pipfd[pip->pipe_index][1]);
 		close_fds(pip);
-		ft_printf("pipe index = %d\n", pip->pipe_index);
 		pip->args = split_and_check(argv[2 + arg], ' ', pip);
 		pip->path = check_paths_access(pip->paths, pip->args, argv[2 + arg], pip);
 		if (execve(pip->path, pip->args, pip->paths) == -1)
@@ -72,7 +71,6 @@ static void	last_child(t_pipex *pip, char **argv, pid_t *p, int arg)
 		dup2(pip->fd_out, STDOUT_FILENO);
 		close(pip->fd_out);
 		close_fds(pip);
-		ft_printf("last pipe index = %d\n", pip->pipe_index);
 		pip->args = split_and_check(argv[1 + pip->mid_args], ' ', pip);
 		pip->path = check_paths_access(pip->paths, pip->args, argv[1 + pip->mid_args], pip);
 		if (execve(pip->path, pip->args, pip->paths) == -1)
@@ -111,16 +109,16 @@ void	pipex(t_pipex *pip, char **argv)
 		pip->path = NULL;
 		i++;
 	}
+	close_fds(pip);
 	i = 0;
 	while (i < pip->mid_args)
 	{
-		ft_printf("mid args = %d\n", pip->mid_args);
-		ft_printf("i = %d\n", i);
-		if (waitpid(p[i], &status, 0) > 0 && WIFEXITED(status))
-			if (i == pip->mid_args - 1)
-				pip->exit_code = WEXITSTATUS(status);
+		if (wait(&status) == p[pip->mid_args - 1] && WIFEXITED(status))
+			pip->exit_code = WEXITSTATUS(status);
+		// if (waitpid(p[i], &status, 0) > 0 && WIFEXITED(status))
+			// if (i == pip->mid_args - 1)
+			// 	pip->exit_code = WEXITSTATUS(status);
 		i++;
 	}
 	free(p);
-	close_fds(pip);
 }

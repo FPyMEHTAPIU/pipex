@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/27 14:54:02 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/27 17:04:24 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	first_child(t_pipex *pip, char **argv, pid_t p)
 {
 	if (p < 0)
 	{
+		close_fds(pip);
 		clean_pip(pip);
 		error_ret(5, NULL);
 	}
@@ -25,10 +26,10 @@ void	first_child(t_pipex *pip, char **argv, pid_t p)
 		if (pip->fd_in == -1)
 			exit_child(pip, argv[1], 1);
 		dup2(pip->fd_in, STDIN_FILENO);
+		close(pip->fd_in);
 		dup2(pip->pipfd[1], STDOUT_FILENO);
 		close(pip->pipfd[1]);
 		close(pip->pipfd[0]);
-		close(pip->fd_in);
 		pip->path = check_paths_access(pip->paths, pip->in_args, argv[2], pip);
 		if (execve(pip->path, pip->in_args, pip->paths) == -1)
 			exit_child(pip, argv[2], 127);
@@ -39,6 +40,7 @@ void	last_child(t_pipex *pip, char **argv, pid_t p)
 {
 	if (p < 0)
 	{
+		close_fds(pip);
 		clean_pip(pip);
 		error_ret(5, NULL);
 	}
@@ -48,10 +50,10 @@ void	last_child(t_pipex *pip, char **argv, pid_t p)
 		if (pip->fd_out == -1)
 			exit_child(pip, argv[4], 1);
 		dup2(pip->pipfd[0], STDIN_FILENO);
-		dup2(pip->fd_out, STDOUT_FILENO);
 		close(pip->pipfd[0]);
-		close(pip->pipfd[1]);
+		dup2(pip->fd_out, STDOUT_FILENO);
 		close(pip->fd_out);
+		close(pip->pipfd[1]);
 		pip->path = check_paths_access(pip->paths, pip->out_args, argv[3], pip);
 		if (execve(pip->path, pip->out_args, pip->paths) == -1)
 			exit_child(pip, argv[3], 127);
