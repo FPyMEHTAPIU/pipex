@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 11:51:46 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/27 12:06:46 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 11:51:00 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@ void	print_exit(char *mes, char *cmd, int exit_code)
 
 	mes_len = ft_strlen(mes) + ft_strlen(cmd) + 3;
 	full_msg = ft_calloc(mes_len, sizeof(char));
+	if (!full_msg)
+	{
+		ft_putstr_fd("Malloc failed\n", 2);
+		exit (exit_code);
+	}
 	if (cmd)
 		ft_strlcpy(full_msg, cmd, mes_len);
 	ft_strlcat(full_msg, ": ", mes_len);
@@ -34,6 +39,8 @@ void	exit_child(t_pipex *pip, char *arg, int exit_code)
 	pip->exit_code = exit_code;
 	clean_pip(pip);
 	ft_putstr_fd("pipex: ", 2);
+	if (!*arg)
+		ft_putstr_fd(": ", 2);
 	perror(arg);
 	close(pip->pipfd[1]);
 	close(pip->pipfd[0]);

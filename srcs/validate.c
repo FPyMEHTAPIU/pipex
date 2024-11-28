@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 12:13:03 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/27 12:41:32 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 11:51:36 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@ char	*check_paths(char **paths, char **args)
 	{
 		path_len = ft_strlen(paths[i]) + ft_strlen(args[0]) + 2;
 		path = ft_calloc(path_len, sizeof(char));
+		if (!path)
+		{
+			ft_putstr_fd("Malloc failed\n", 2);
+			return (NULL);
+		}
 		ft_strlcpy(path, paths[i], path_len);
 		ft_strlcat(path, "/", path_len);
 		ft_strlcat(path, args[0], path_len);

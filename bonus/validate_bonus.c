@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 12:13:03 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/27 12:39:51 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 11:48:28 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@ char	*check_paths(char **paths, char **args)
 	{
 		path_len = ft_strlen(paths[i]) + ft_strlen(args[0]) + 2;
 		path = ft_calloc(path_len, sizeof(char));
+		if (!path)
+		{
+			ft_putstr_fd("Malloc failed\n", 2);
+			return (NULL);
+		}
 		ft_strlcpy(path, paths[i], path_len);
 		ft_strlcat(path, "/", path_len);
 		ft_strlcat(path, args[0], path_len);
@@ -67,17 +72,23 @@ int	check_permission(t_pipex *pip, char **argv, int arg, bool first)
 		if (access(argv[1], F_OK) != 0)
 			exit_child(pip, argv[1], 1, arg);
 		pip->fd_in = open(argv[1], O_RDONLY);
-		if (pip->fd_in == -1)
+		if (pip->fd_in == -1 && errno == EACCES)
 			exit_child(pip, argv[1], 126, arg);
+		else if (pip->fd_in == -1)
+			exit_child(pip, argv[1], 1, arg);
 	}
 	else
 	{
+		if (!argv[2 + pip->mid_args])
+			exit_child(pip, argv[2 + pip->mid_args], 1, arg);
 		if (pip->is_heredoc == 1)
 			pip->fd_out = open(argv[2 + pip->mid_args], O_WRONLY | O_CREAT | O_APPEND, 0644);
 		else
 			pip->fd_out = open(argv[2 + pip->mid_args], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (pip->fd_out == -1)
+		if (pip->fd_out == -1 && errno == EACCES)
 			exit_child(pip, argv[2 + pip->mid_args], 126, arg);
+		else if (pip->fd_out == -1)
+			exit_child(pip, argv[2 + pip->mid_args], 1, arg);
 	}
 	return (0);
 }

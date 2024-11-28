@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/27 17:09:00 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 11:20:38 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,10 @@ static void	first_child(t_pipex *pip, char **argv, pid_t *p, int arg)
 		dup2(pip->pipfd[pip->pipe_index][1], STDOUT_FILENO);
 		close(pip->pipfd[pip->pipe_index][1]);
 		close_fds(pip);
-		pip->args = split_and_check(argv[2 + arg], ' ', pip);
-		pip->path = check_paths_access(pip->paths, pip->args, argv[2 + arg], pip);
+		pip->args = split_and_check(argv[2 + arg + pip->is_heredoc], ' ', pip);
+		pip->path = check_paths_access(pip->paths, pip->args, argv[2 + arg + pip->is_heredoc], pip);
 		if (execve(pip->path, pip->args, pip->paths) == -1)
-			exit_child(pip, argv[2 + arg], 127, arg);
+			exit_child(pip, argv[2 + arg + pip->is_heredoc], 127, arg);
 	}
 }
 
@@ -84,13 +84,13 @@ void	pipex(t_pipex *pip, char **argv)
 	pid_t	*p;
 	int		status;
 
-	i = 0;
 	p = malloc (sizeof(pid_t) * pip->mid_args);
 	if (!p)
 	{
 		clean_pip(pip);
 		error_ret(6, NULL);
 	}
+	i = 0;
 	while (i < pip->mid_args)
 	{
 		p[i] = fork();
@@ -115,9 +115,6 @@ void	pipex(t_pipex *pip, char **argv)
 	{
 		if (wait(&status) == p[pip->mid_args - 1] && WIFEXITED(status))
 			pip->exit_code = WEXITSTATUS(status);
-		// if (waitpid(p[i], &status, 0) > 0 && WIFEXITED(status))
-			// if (i == pip->mid_args - 1)
-			// 	pip->exit_code = WEXITSTATUS(status);
 		i++;
 	}
 	free(p);
