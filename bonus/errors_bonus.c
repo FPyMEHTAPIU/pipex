@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 11:51:46 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/28 12:09:18 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 14:24:33 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,9 @@ void	print_exit(char *mes, char *cmd, int exit_code)
 	exit (exit_code);
 }
 
-void	exit_child(t_pipex *pip, char *arg, int exit_code, int i)
+void	exit_child(t_pipex *pip, char *arg, int exit_code)
 {
 	pip->exit_code = exit_code;
-	close(pip->pipfd[i][0]);
-	close(pip->pipfd[i][1]);
 	clean_pip(pip);
 	ft_putstr_fd("pipex: ", 2);
 	if (!*arg)
