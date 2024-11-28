@@ -6,13 +6,13 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 12:13:03 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/28 15:42:35 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 15:51:33 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
 
-static void	check_is_dir(char *arg, t_pipex* pip)
+static void	check_is_dir(char *arg, t_pipex *pip)
 {
 	int	fd;
 
@@ -96,9 +96,11 @@ int	check_permission(t_pipex *pip, char **argv, bool first)
 		if (!argv[2 + pip->mid_args])
 			exit_child(pip, argv[2 + pip->mid_args], 1);
 		if (pip->is_heredoc == 1)
-			pip->fd_out = open(argv[2 + pip->mid_args], O_WRONLY | O_CREAT | O_APPEND, 0644);
+			pip->fd_out = open(argv[2 + pip->mid_args],
+					O_WRONLY | O_CREAT | O_APPEND, 0644);
 		else
-			pip->fd_out = open(argv[2 + pip->mid_args], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			pip->fd_out = open(argv[2 + pip->mid_args],
+					O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (pip->fd_out == -1)
 			exit_child(pip, argv[2 + pip->mid_args], 1);
 	}

@@ -6,13 +6,13 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 12:13:03 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/28 15:06:20 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 15:48:25 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-static void	check_is_dir(char *arg, t_pipex* pip)
+static void	check_is_dir(char *arg, t_pipex *pip)
 {
 	int	fd;
 

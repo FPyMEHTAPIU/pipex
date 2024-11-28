@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 10:48:42 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/15 16:08:46 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 15:49:27 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	count_mid_args(char **argv)
 
 char	**check_args(char **args)
 {
-	static char *new_args[] = { "", NULL };
+	static char	*new_args[] = {"", NULL};
 
 	if (!args)
 		return (new_args);

@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 10:45:18 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/19 13:23:08 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 15:49:03 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	clean_strs(char **strs)
 {
 	int	i;
-	
+
 	if (!strs || !*strs)
 		return ;
 	i = 0;
@@ -33,7 +33,7 @@ void	free_path(char *path)
 	path = NULL;
 }
 
-static void clean_pipes(t_pipex *pip)
+static void	clean_pipes(t_pipex *pip)
 {
 	int	i;
 
