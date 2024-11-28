@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 12:13:03 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/28 11:48:28 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 12:20:40 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,7 @@ int	check_permission(t_pipex *pip, char **argv, int arg, bool first)
 		if (access(argv[1], F_OK) != 0)
 			exit_child(pip, argv[1], 1, arg);
 		pip->fd_in = open(argv[1], O_RDONLY);
-		if (pip->fd_in == -1 && errno == EACCES)
-			exit_child(pip, argv[1], 126, arg);
-		else if (pip->fd_in == -1)
+		if (pip->fd_in == -1)
 			exit_child(pip, argv[1], 1, arg);
 	}
 	else
@@ -85,9 +83,7 @@ int	check_permission(t_pipex *pip, char **argv, int arg, bool first)
 			pip->fd_out = open(argv[2 + pip->mid_args], O_WRONLY | O_CREAT | O_APPEND, 0644);
 		else
 			pip->fd_out = open(argv[2 + pip->mid_args], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (pip->fd_out == -1 && errno == EACCES)
-			exit_child(pip, argv[2 + pip->mid_args], 126, arg);
-		else if (pip->fd_out == -1)
+		if (pip->fd_out == -1)
 			exit_child(pip, argv[2 + pip->mid_args], 1, arg);
 	}
 	return (0);

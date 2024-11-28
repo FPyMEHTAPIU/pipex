@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/27 16:55:14 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 14:03:54 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	handle_here_doc(t_pipex *pip, char **argv)
 		error_ret(7, NULL);
 	}
 	str = get_next_line(STDIN_FILENO);
-	while (str && !ft_strnstr(str, argv[1], ft_strlen(argv[1])))
+	while (str && ft_strncmp(str, argv[1], ft_strlen(str) - 1) != 0)
 	{
 		ft_putstr_fd(str, pip->fd_in);
 		free(str);

@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 11:51:46 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/28 11:46:13 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 12:09:18 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ Provide at least 4 arguments!\n", 2);
 		ft_putstr_fd("FD handling error\n", 2);
 	else if (type == 8)
 		ft_putstr_fd("Incorrect number of arguments! \
-Provide 5 arguments!\n", 2);
+Provide at least 5 arguments!\n", 2);
 	exit(0);
 }
 
