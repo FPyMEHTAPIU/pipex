@@ -6,11 +6,25 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 12:13:03 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/28 14:19:43 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 15:42:35 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
+
+static void	check_is_dir(char *arg, t_pipex* pip)
+{
+	int	fd;
+
+	fd = open(arg, O_DIRECTORY);
+	if (fd >= 0)
+	{
+		close(fd);
+		clean_pip(pip);
+		pip->exit_code = 126;
+		print_exit("Is a directory\n", arg, pip->exit_code);
+	}
+}
 
 char	*check_paths(char **paths, char **args)
 {
@@ -46,6 +60,7 @@ char	*check_paths_access(char **paths, char **args, char *arg, t_pipex *pip)
 	char	*path;
 
 	args = check_args(args);
+	check_is_dir(arg, pip);
 	if (args[0][0] == '/' || args[0][0] == '.')
 		return (ft_strdup(args[0]));
 	else
@@ -61,6 +76,7 @@ char	*check_paths_access(char **paths, char **args, char *arg, t_pipex *pip)
 			pip->exit_code = 127;
 			print_exit("command not found\n", arg, pip->exit_code);
 		}
+		check_is_dir(arg, pip);
 		return (path);
 	}
 }

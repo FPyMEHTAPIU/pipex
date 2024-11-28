@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/27 17:11:47 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 15:35:25 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,28 @@ static t_pipex	init_pip(char **envp)
 	pip.paths = fetch_paths(envp);
 	pip.exit_code = 0;
 	return (pip);
+}
+
+static int	wait_children(int *status, pid_t *p, t_pipex *pip)
+{
+	int	i;
+	int	signal;
+
+	i = 0;
+	while (i < 2)
+	{
+		if (wait(status) == p[1] && WIFEXITED(*status))
+		{
+			if (WIFSIGNALED(*status))
+			{
+				signal = WTERMSIG(*status);
+				return (128 + signal);
+			}
+			pip->exit_code = WEXITSTATUS(*status);
+		}
+		i++;
+	}
+	return (pip->exit_code);
 }
 
 int	main(int argc, char *argv[], char **envp)
@@ -49,10 +71,7 @@ int	main(int argc, char *argv[], char **envp)
 	p[1] = fork();
 	last_child(&pip, argv, p[1]);
 	close_fds(&pip);
-	for (int i = 0; i < 2; i++) {
-		if (wait(&status) == p[1] && WIFEXITED(status))
-			pip.exit_code = WEXITSTATUS(status);
-	}
+	pip.exit_code = wait_children(&status, p, &pip);
 	clean_pip(&pip);
 	return (pip.exit_code);
 }

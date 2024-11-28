@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:38:44 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/27 17:03:42 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 15:01:35 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define PIPEX_H
 # include <stdio.h>
 # include <fcntl.h>
-# include <sys/types.h>
 # include <errno.h>
 # include <stdbool.h>
 # include <sys/wait.h>

@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/28 14:23:34 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 15:45:49 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,18 +78,10 @@ static void	last_child(t_pipex *pip, char **argv, pid_t *p, int arg)
 	}
 }
 
-void	pipex(t_pipex *pip, char **argv)
+void	call_children(t_pipex *pip, char **argv, pid_t *p)
 {
-	int		i;
-	pid_t	*p;
-	int		status;
+	int	i;
 
-	p = malloc (sizeof(pid_t) * pip->mid_args);
-	if (!p)
-	{
-		clean_pip(pip);
-		error_ret(6, NULL);
-	}
 	i = 0;
 	while (i < pip->mid_args)
 	{
@@ -109,13 +101,26 @@ void	pipex(t_pipex *pip, char **argv)
 		pip->path = NULL;
 		i++;
 	}
-	close_fds(pip);
+}
+
+int	wait_children(int *status, pid_t *p, t_pipex *pip)
+{
+	int	i;
+	int	signal;
+
 	i = 0;
 	while (i < pip->mid_args)
 	{
-		if (wait(&status) == p[pip->mid_args - 1] && WIFEXITED(status))
-			pip->exit_code = WEXITSTATUS(status);
+		if (wait(status) == p[pip->mid_args - 1] && WIFEXITED(*status))
+		{
+			if (WIFSIGNALED(*status))
+			{
+				signal = WTERMSIG(*status);
+				return (128 + signal);
+			}
+			pip->exit_code = WEXITSTATUS(*status);
+		}	
 		i++;
 	}
-	free(p);
+	return (pip->exit_code);
 }

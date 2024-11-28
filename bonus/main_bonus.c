@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/28 14:03:54 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 15:45:58 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,23 @@ static t_pipex	init_pip(char **envp, char **argv)
 	pip.pipe_index = 0;
 	alloc_pipes(&pip);
 	return (pip);
+}
+
+static void	pipex(t_pipex *pip, char **argv)
+{
+	pid_t	*p;
+	int		status;
+
+	p = malloc (sizeof(pid_t) * pip->mid_args);
+	if (!p)
+	{
+		clean_pip(pip);
+		error_ret(6, NULL);
+	}
+	call_children(pip, argv, p);
+	close_fds(pip);
+	pip->exit_code = wait_children(&status, p, pip);
+	free(p);
 }
 
 int	main(int argc, char *argv[], char **envp)

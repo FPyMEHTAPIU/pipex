@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:38:44 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/28 14:19:49 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/28 15:45:27 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ void	clean_strs(char **strs);
 int		count_mid_args(char **argv);
 void	alloc_pipes(t_pipex *pip);
 void	close_fds(t_pipex *pip);
-void	pipex(t_pipex *pip, char **argv);
 int		check_permission(t_pipex *pip, char **argv, bool first);
+void	call_children(t_pipex *pip, char **argv, pid_t *p);
+int		wait_children(int *status, pid_t *p, t_pipex *pip);
 
 #endif
