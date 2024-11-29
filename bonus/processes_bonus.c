@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 11:49:58 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/28 15:50:55 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/29 12:58:57 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,15 +44,16 @@ static void	first_child(t_pipex *pip, char **argv, pid_t *p, int arg)
 	}
 	else if (p[arg] == 0)
 	{
+		free(p);
 		read_first(pip, argv, arg);
 		dup2(pip->pipfd[pip->pipe_index][1], STDOUT_FILENO);
 		close(pip->pipfd[pip->pipe_index][1]);
 		close_fds(pip);
-		pip->args = split_and_check(argv[2 + arg + pip->is_heredoc], ' ', pip);
+		pip->args = split_and_check(argv[2 + arg], ' ', pip);
 		pip->path = check_paths_access(pip->paths, pip->args,
-				argv[2 + arg + pip->is_heredoc], pip);
+				argv[2 + arg], pip);
 		if (execve(pip->path, pip->args, pip->paths) == -1)
-			exit_child(pip, argv[2 + arg + pip->is_heredoc], 127);
+			exit_child(pip, argv[2 + arg], 127);
 	}
 }
 
@@ -66,6 +67,7 @@ static void	last_child(t_pipex *pip, char **argv, pid_t *p, int arg)
 	}
 	else if (p[arg + 1] == 0)
 	{
+		free(p);
 		check_permission(pip, argv, false);
 		dup2(pip->pipfd[pip->pipe_index][0], STDIN_FILENO);
 		close(pip->pipfd[pip->pipe_index][0]);

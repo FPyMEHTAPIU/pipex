@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 11:51:46 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/28 15:17:44 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/29 12:25:50 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	exit_child(t_pipex *pip, char *arg, int exit_code)
 	perror(arg);
 	close(pip->pipfd[1]);
 	close(pip->pipfd[0]);
-	if (errno == EACCES)
+	if (errno == EACCES && exit_code != 1)
 		exit_code = 126;
 	exit(exit_code);
 }

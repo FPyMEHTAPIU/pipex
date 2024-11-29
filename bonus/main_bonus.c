@@ -6,7 +6,7 @@
 /*   By: msavelie <msavelie@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:23:55 by msavelie          #+#    #+#             */
-/*   Updated: 2024/11/28 15:45:58 by msavelie         ###   ########.fr       */
+/*   Updated: 2024/11/29 12:36:32 by msavelie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static void	pipex(t_pipex *pip, char **argv)
 	pid_t	*p;
 	int		status;
 
-	p = malloc (sizeof(pid_t) * pip->mid_args);
+	p = malloc(sizeof(pid_t) * pip->mid_args);
 	if (!p)
 	{
 		clean_pip(pip);
